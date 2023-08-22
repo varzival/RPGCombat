@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: feb8632618443527f88c10cf912b92d9, type: 3}
-  m_Name: Bow
+  m_Name: BowBlueTrail
   m_EditorClassIdentifier: 
-  weaponRange: 3
+  weaponRange: 10
   timeBetweenAttacks: 1
   damage: 10
   weaponPrefab: {fileID: 2015912814544541518, guid: 12d16b98131004d698bc88ece999a949, type: 3}
   isRightHanded: 0
   weaponOverride: {fileID: 22100000, guid: d56f4f3a1736d3d03876df90d2de5296, type: 2}
+  projectile: {fileID: 6879146561777535694, guid: 1b2de086e2224faf182e4fb72773af88, type: 3}

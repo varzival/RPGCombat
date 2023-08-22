@@ -50,9 +50,7 @@ namespace RPG.Combat
         [SerializeField]
         Transform leftHandTransform;
 
-        [SerializeField]
         Weapon currentWeapon;
-
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
 
@@ -132,10 +130,21 @@ namespace RPG.Combat
                 return;
             if (TargetInRange())
             {
-                target.TakeDamage(Damage);
+                if (currentWeapon.HasProjectile)
+                {
+                    currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                }
+                else
+                    target.TakeDamage(Damage);
             }
             else
                 Debug.Log("target not in range");
+        }
+
+        // Animation Event
+        public void Shoot()
+        {
+            Hit();
         }
     }
 }

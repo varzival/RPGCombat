@@ -1,4 +1,4 @@
-using System;
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -39,6 +39,14 @@ namespace RPG.Combat
         [SerializeField]
         AnimatorOverrideController weaponOverride;
 
+        [SerializeField]
+        Projectile projectile;
+
+        public bool HasProjectile
+        {
+            get { return projectile != null; }
+        }
+
         public void Spawn(
             Transform rightHandTransform,
             Transform leftHandTransform,
@@ -55,6 +63,22 @@ namespace RPG.Combat
             }
             if (weaponOverride != null)
                 characterAnimator.runtimeAnimatorController = weaponOverride;
+        }
+
+        public void LaunchProjectile(
+            Transform rightHandTransform,
+            Transform leftHandTransform,
+            Health target
+        )
+        {
+            if (projectile == null)
+                return;
+            Projectile projectileInstance = Instantiate(
+                projectile,
+                isRightHanded ? rightHandTransform.position : leftHandTransform.position,
+                Quaternion.identity
+            );
+            projectileInstance.SetTarget(target, damage);
         }
     }
 }
