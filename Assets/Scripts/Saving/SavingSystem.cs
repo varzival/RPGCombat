@@ -28,6 +28,8 @@ namespace RPG.Saving
         public IEnumerator LoadLastScene(string saveFile)
         {
             Dictionary<string, object> dict = LoadFile(saveFile);
+            if (!dict.ContainsKey("scene"))
+                yield break;
             int buildIndex = (int)dict["scene"];
             Debug.Log($"Loading scene with buildIndex {buildIndex}");
             if (buildIndex != SceneManager.GetActiveScene().buildIndex)

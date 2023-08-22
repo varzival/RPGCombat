@@ -11,14 +11,47 @@ namespace RPG.Combat
     ]
     public class Fighter : MonoBehaviour, IAction
     {
-        [SerializeField]
-        float weaponRange = 2f;
+        public float WeaponRange
+        {
+            get
+            {
+                if (currentWeapon != null)
+                    return currentWeapon.WeaponRange;
+                return 0;
+            }
+        }
+
+        public float TimeBetweenAttacks
+        {
+            get
+            {
+                if (currentWeapon != null)
+                    return currentWeapon.TimeBetweenAttacks;
+                return 0;
+            }
+        }
+
+        public float Damage
+        {
+            get
+            {
+                if (currentWeapon != null)
+                    return currentWeapon.Damage;
+                return 0;
+            }
+        }
 
         [SerializeField]
-        float timeBetweenAttacks = 0.5f;
+        Weapon defaultWeapon;
 
         [SerializeField]
-        float damage = 10f;
+        Transform rightHandTransform;
+
+        [SerializeField]
+        Transform leftHandTransform;
+
+        [SerializeField]
+        Weapon currentWeapon;
 
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
@@ -26,6 +59,11 @@ namespace RPG.Combat
         public Health Target
         {
             get { return target; }
+        }
+
+        private void Start()
+        {
+            EquipWeapon(defaultWeapon);
         }
 
         private void Update()
@@ -43,9 +81,17 @@ namespace RPG.Combat
             }
         }
 
+        public void EquipWeapon(Weapon weapon)
+        {
+            if (weapon == null)
+                return;
+            weapon.Spawn(rightHandTransform, leftHandTransform, GetComponent<Animator>());
+            currentWeapon = weapon;
+        }
+
         private bool TargetInRange()
         {
-            return DistanceToTarget() <= weaponRange;
+            return DistanceToTarget() <= WeaponRange;
         }
 
         private float DistanceToTarget()
@@ -56,7 +102,7 @@ namespace RPG.Combat
         private void AttackBehaviour()
         {
             GetComponent<Mover>().Cancel();
-            if (timeSinceLastAttack > timeBetweenAttacks)
+            if (timeSinceLastAttack > TimeBetweenAttacks)
             {
                 transform.LookAt(target.transform);
                 GetComponent<Animator>().ResetTrigger("StopAttack");
@@ -86,7 +132,7 @@ namespace RPG.Combat
                 return;
             if (TargetInRange())
             {
-                target.TakeDamage(damage);
+                target.TakeDamage(Damage);
             }
             else
                 Debug.Log("target not in range");

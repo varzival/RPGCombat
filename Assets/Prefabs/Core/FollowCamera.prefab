@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TrackedObjectOffset: {x: -2.8698812, y: -2.688606, z: 2.1967175}
-  m_LookaheadTime: 0.047
+  m_LookaheadTime: 0
   m_LookaheadSmoothing: 0.3
   m_LookaheadIgnoreY: 0
   m_XDamping: 1
