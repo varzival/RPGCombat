@@ -26,7 +26,7 @@ namespace RPG.CharacterControl
         {
             if (health.IsDead)
                 return;
-            Debug.DrawRay(lastRay.origin, lastRay.direction * 100);
+            //Debug.DrawRay(lastRay.origin, lastRay.direction * 100);
 
             if (InteractWithCombat())
             {
@@ -51,7 +51,7 @@ namespace RPG.CharacterControl
                 {
                     if (!target.CanBeAttacked())
                         continue;
-                    if (Input.GetMouseButtonDown(0))
+                    if (Input.GetMouseButton(0))
                     {
                         GetComponent<Fighter>().Attack(target.GetComponent<Health>());
                     }

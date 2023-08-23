@@ -6,13 +6,17 @@ namespace RPG.Core
     {
         private IAction currentAction;
 
+        private float ignoreActionChangeTime = 0.2f;
+        private float timeSinceLastAction = 0f;
+
         public void StartAction(IAction action)
         {
-            if (currentAction == action)
+            if (currentAction == action || timeSinceLastAction < ignoreActionChangeTime)
                 return;
             if (currentAction != null)
             {
                 currentAction.Cancel();
+                timeSinceLastAction = 0f;
                 Debug.Log($"canceled action {currentAction}");
             }
             currentAction = action;
@@ -22,6 +26,11 @@ namespace RPG.Core
         public void CancelCurrentAction()
         {
             StartAction(null);
+        }
+
+        private void Update()
+        {
+            timeSinceLastAction += Time.deltaTime;
         }
     }
 }

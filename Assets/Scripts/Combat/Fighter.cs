@@ -69,7 +69,6 @@ namespace RPG.Combat
             timeSinceLastAttack += Time.deltaTime;
             if (target != null && !target.IsDead)
             {
-                //float distanceToTarget = Vector3.Distance(target.position, transform.position);
                 if (!TargetInRange())
                     GetComponent<Mover>().MoveTo(target.transform.position);
                 else
@@ -94,7 +93,7 @@ namespace RPG.Combat
 
         private float DistanceToTarget()
         {
-            return (target.transform.position - transform.position).magnitude;
+            return Vector3.Distance(target.transform.position, transform.position);
         }
 
         private void AttackBehaviour()

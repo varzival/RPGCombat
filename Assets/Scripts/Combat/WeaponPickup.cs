@@ -10,7 +10,6 @@ namespace RPG.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            print("COLLIDE");
             if (other.gameObject.tag == "Player")
             {
                 other.gameObject.GetComponent<Fighter>().EquipWeapon(weapon);
