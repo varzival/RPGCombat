@@ -1,5 +1,6 @@
 using RPG.Characters;
 using RPG.Core;
+using RPG.Saving;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -9,7 +10,7 @@ namespace RPG.Combat
         RequireComponent(typeof(Animator)),
         RequireComponent(typeof(ActionScheduler))
     ]
-    public class Fighter : MonoBehaviour, IAction
+    public class Fighter : MonoBehaviour, IAction, ISaveable
     {
         public float WeaponRange
         {
@@ -51,6 +52,7 @@ namespace RPG.Combat
         Transform leftHandTransform;
 
         Weapon currentWeapon;
+
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
 
@@ -61,7 +63,8 @@ namespace RPG.Combat
 
         private void Start()
         {
-            EquipWeapon(defaultWeapon);
+            if (currentWeapon == null)
+                EquipWeapon(defaultWeapon);
         }
 
         private void Update()
@@ -144,6 +147,18 @@ namespace RPG.Combat
         public void Shoot()
         {
             Hit();
+        }
+
+        public object CaptureState()
+        {
+            return currentWeapon.name;
+        }
+
+        public void RestoreState(object state)
+        {
+            string weaponName = (string)state;
+            if (weaponName != null && weaponName != "")
+                EquipWeapon(Resources.Load<Weapon>(weaponName));
         }
     }
 }

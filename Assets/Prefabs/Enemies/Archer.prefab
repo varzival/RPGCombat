@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: defaultWeapon
       value: 
       objectReference: {fileID: 11400000, guid: 243ab1a4490b90a7984df15a8ae1e478, type: 2}
+    - target: {fileID: 1551717038658652342, guid: 71f8c67eee9b48865baa54fee94027b4, type: 3}
+      propertyPath: defaultWeaponName
+      value: BowRedTrail
+      objectReference: {fileID: 0}
     - target: {fileID: 2471360710873167329, guid: 71f8c67eee9b48865baa54fee94027b4, type: 3}
       propertyPath: m_Name
       value: Archer

@@ -12,8 +12,6 @@ namespace RPG.CharacterControl
     ]
     public class PlayerController : MonoBehaviour
     {
-        private Ray lastRay;
-
         Health health;
 
         private void Start()
@@ -26,7 +24,6 @@ namespace RPG.CharacterControl
         {
             if (health.IsDead)
                 return;
-            //Debug.DrawRay(lastRay.origin, lastRay.direction * 100);
 
             if (InteractWithCombat())
             {
@@ -63,22 +60,15 @@ namespace RPG.CharacterControl
 
         private bool InteractWithMovement()
         {
-            if (Input.GetMouseButton(0) && MoveToCursor())
+            if (Physics.Raycast(GetMouseRay(), out RaycastHit raycastHit))
             {
-                GetComponent<Fighter>().Cancel();
+                if (Input.GetMouseButton(0))
+                {
+                    GetComponent<Mover>().StartMoveAction(raycastHit.point);
+                }
                 return true;
             }
-            return false;
-        }
 
-        private bool MoveToCursor()
-        {
-            lastRay = GetMouseRay();
-            if (Physics.Raycast(lastRay, out RaycastHit raycastHit))
-            {
-                GetComponent<Mover>().StartMoveAction(raycastHit.point);
-                return true;
-            }
             return false;
         }
 

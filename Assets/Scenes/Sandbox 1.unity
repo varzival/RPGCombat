@@ -3033,6 +3033,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.31072643
       objectReference: {fileID: 0}
+    - target: {fileID: 3508494944044607373, guid: f15aad8e793a3893baa5f0cbdaa97572, type: 3}
+      propertyPath: defaultWeapon
+      value: 
+      objectReference: {fileID: 11400000, guid: 1f241a496d4f30324bfaafe17c0f01fc, type: 2}
     - target: {fileID: 4641970466619632351, guid: f15aad8e793a3893baa5f0cbdaa97572, type: 3}
       propertyPath: m_RootOrder
       value: 4

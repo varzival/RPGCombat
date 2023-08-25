@@ -43,6 +43,14 @@ PrefabInstance:
       propertyPath: m_Parameters.colorGradient.key1.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5919326102194585800, guid: 1b2de086e2224faf182e4fb72773af88, type: 3}
+      propertyPath: m_Size.z
+      value: 0.67360973
+      objectReference: {fileID: 0}
+    - target: {fileID: 5919326102194585800, guid: 1b2de086e2224faf182e4fb72773af88, type: 3}
+      propertyPath: m_Center.z
+      value: 0.18044966
+      objectReference: {fileID: 0}
     - target: {fileID: 6879146561777535694, guid: 1b2de086e2224faf182e4fb72773af88, type: 3}
       propertyPath: trailColor.a
       value: 1

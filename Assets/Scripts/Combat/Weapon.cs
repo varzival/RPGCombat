@@ -77,8 +77,22 @@ namespace RPG.Combat
                 );
                 newWeapon.name = weaponName;
             }
+
             if (weaponOverride != null)
+            {
                 characterAnimator.runtimeAnimatorController = weaponOverride;
+            }
+            else
+            {
+                // Reset to parent controller if current animator controller is an override
+                AnimatorOverrideController controller =
+                    characterAnimator.runtimeAnimatorController as AnimatorOverrideController;
+                if (controller != null)
+                {
+                    characterAnimator.runtimeAnimatorController =
+                        controller.runtimeAnimatorController;
+                }
+            }
         }
 
         public void LaunchProjectile(

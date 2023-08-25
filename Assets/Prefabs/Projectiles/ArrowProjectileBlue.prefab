@@ -48,6 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+  homingProjectile: 0
+  maxAliveTime: 5
+  impactEffect: {fileID: 0}
 --- !u!65 &5919326102194585800
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -59,8 +62,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.227348, y: 0.2186377, z: 1.0201719}
-  m_Center: {x: -0.20620282, y: -0.05114737, z: 0.35373068}
+  m_Size: {x: 0.227348, y: 0.2186377, z: 0.8638391}
+  m_Center: {x: -0.20620282, y: -0.05114737, z: 0.27556434}
 --- !u!1 &7629911943313896606
 GameObject:
   m_ObjectHideFlags: 0

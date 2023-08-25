@@ -16,6 +16,6 @@ MonoBehaviour:
   timeBetweenAttacks: 0.5
   damage: 10
   weaponPrefab: {fileID: 0}
-  isRightHanded: 1
+  isRightHanded: 0
   weaponOverride: {fileID: 22100000, guid: 6c73c1646318f8826b8b1ea802249bbf, type: 2}
   projectile: {fileID: 6879146561777535694, guid: 63a0c21da6f9414c29cc541d8b6864b9, type: 3}
