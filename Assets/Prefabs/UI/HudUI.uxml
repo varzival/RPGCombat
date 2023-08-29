@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Prefabs/UI/style.uss?fileID=7433441132597879392&amp;guid=ac4a7752cc69e00b8a264624a8e981cb&amp;type=3#style" />
+    <ui:VisualElement name="Container" style="flex-grow: 1;">
+        <ui:VisualElement name="HealthContainer" class="hudTextContainer">
+            <ui:Label text="Health:" display-tooltip-when-elided="true" name="HealthLabel" class="hudText" />
+            <ui:Label text="100%" display-tooltip-when-elided="true" name="HealthValue" class="hudText" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

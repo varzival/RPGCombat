@@ -3,6 +3,7 @@ using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
 using RPG.Saving;
+using RPG.Stats;
 using UnityEngine;
 
 namespace RPG.CharacterControl

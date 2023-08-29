@@ -2,6 +2,7 @@
 using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
+using RPG.Stats;
 
 namespace RPG.CharacterControl
 {
