@@ -98,7 +98,8 @@ namespace RPG.Combat
         public void LaunchProjectile(
             Transform rightHandTransform,
             Transform leftHandTransform,
-            Health target
+            Health target,
+            GameObject instigator
         )
         {
             if (projectile == null)
@@ -108,7 +109,7 @@ namespace RPG.Combat
                 isRightHanded ? rightHandTransform.position : leftHandTransform.position,
                 Quaternion.identity
             );
-            projectileInstance.SetTarget(target, damage);
+            projectileInstance.SetTarget(target, damage, instigator);
         }
     }
 }

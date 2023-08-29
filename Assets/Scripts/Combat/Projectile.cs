@@ -21,6 +21,8 @@ namespace RPG.Combat
         [SerializeField]
         GameObject impactEffect;
 
+        GameObject instigator;
+
         float currentAliveTime = 0f;
 
         // Start is called before the first frame update
@@ -50,10 +52,11 @@ namespace RPG.Combat
             return aimLocation;
         }
 
-        public void SetTarget(Health target, float damage)
+        public void SetTarget(Health target, float damage, GameObject instigator)
         {
             this.targetHealth = target;
             this.damage = damage;
+            this.instigator = instigator;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -62,7 +65,7 @@ namespace RPG.Combat
             {
                 if (health == targetHealth && !targetHealth.IsDead)
                 {
-                    targetHealth.TakeDamage(damage);
+                    targetHealth.TakeDamage(damage, instigator);
                     if (impactEffect != null)
                         Instantiate(impactEffect, transform.position, transform.rotation);
                     Destroy(gameObject);

@@ -36,7 +36,7 @@ namespace RPG.Stats
             HealthChanged?.Invoke(GetHealthFraction());
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, GameObject instigator)
         {
             health -= damage;
             if (health <= 0)
@@ -46,6 +46,13 @@ namespace RPG.Stats
                 {
                     Die();
                     GetComponent<ActionScheduler>().CancelCurrentAction();
+                    if (
+                        instigator.TryGetComponent(out Experience instigatorExperience)
+                        && TryGetComponent(out BaseStats baseStats)
+                    )
+                    {
+                        instigatorExperience.AwardXP(baseStats.ExperienceAward);
+                    }
                 }
             }
             HealthChanged?.Invoke(GetHealthFraction());

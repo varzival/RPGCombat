@@ -140,10 +140,15 @@ namespace RPG.Combat
             {
                 if (currentWeapon.HasProjectile)
                 {
-                    currentWeapon.LaunchProjectile(rightHandTransform, leftHandTransform, target);
+                    currentWeapon.LaunchProjectile(
+                        rightHandTransform,
+                        leftHandTransform,
+                        target,
+                        gameObject
+                    );
                 }
                 else
-                    target.TakeDamage(Damage);
+                    target.TakeDamage(Damage, gameObject);
             }
             else
                 Debug.Log("target not in range");
