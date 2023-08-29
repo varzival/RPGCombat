@@ -33,7 +33,6 @@ namespace RPG.Stats
         {
             health = GetComponent<BaseStats>().Health;
             maxHealth = health;
-            print($"Health {health} {maxHealth} {health / maxHealth}");
             HealthChanged?.Invoke(GetHealthFraction());
         }
 

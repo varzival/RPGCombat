@@ -3,6 +3,7 @@ using RPG.Core;
 using RPG.Stats;
 using RPG.Saving;
 using UnityEngine;
+using System;
 
 namespace RPG.Combat
 {
@@ -62,6 +63,8 @@ namespace RPG.Combat
             get { return target; }
         }
 
+        public event Action<Health> TargetChanged;
+
         private void Start()
         {
             if (currentWeapon == null)
@@ -115,12 +118,14 @@ namespace RPG.Combat
         public void Attack(Health target)
         {
             this.target = target;
+            TargetChanged?.Invoke(target);
             GetComponent<ActionScheduler>().StartAction(this);
         }
 
         public void Cancel()
         {
             this.target = null;
+            TargetChanged?.Invoke(null);
             GetComponent<Animator>().SetTrigger("StopAttack");
             GetComponent<Animator>().ResetTrigger("Attack");
         }
