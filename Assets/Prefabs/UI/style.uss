@@ -12,3 +12,8 @@
     margin-bottom: 10px;
     flex-direction: row;
 }
+
+.twoColumnContainer {
+    flex-direction: row;
+    justify-content: space-between;
+}

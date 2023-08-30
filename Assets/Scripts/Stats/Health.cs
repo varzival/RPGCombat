@@ -13,7 +13,7 @@ namespace RPG.Stats
     public class Health : MonoBehaviour, ISaveable
     {
         [SerializeField]
-        float health = 100f;
+        float health = -1;
         float maxHealth = 0f;
         bool dead = false;
 
@@ -31,8 +31,9 @@ namespace RPG.Stats
 
         private void Start()
         {
-            health = GetComponent<BaseStats>().Health;
-            maxHealth = health;
+            if (health == -1)
+                health = GetComponent<BaseStats>().Health;
+            maxHealth = GetComponent<BaseStats>().Health;
             HealthChanged?.Invoke(GetHealthFraction());
         }
 
@@ -51,7 +52,7 @@ namespace RPG.Stats
                         && TryGetComponent(out BaseStats baseStats)
                     )
                     {
-                        instigatorExperience.AwardXP(baseStats.ExperienceAward);
+                        instigatorExperience.AwardXP(baseStats.ExperienceReward);
                     }
                 }
             }
@@ -67,10 +68,19 @@ namespace RPG.Stats
         public void RestoreState(object state)
         {
             health = (float)state;
+            HealthChanged?.Invoke(GetHealthFraction());
 
             if (health <= 0)
             {
                 Die();
+            }
+            else
+            {
+                if (dead)
+                {
+                    GetComponent<Animator>().SetTrigger("Resurrect");
+                }
+                dead = false;
             }
         }
 

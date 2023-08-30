@@ -3094,10 +3094,6 @@ PrefabInstance:
       propertyPath: defaultWeapon
       value: 
       objectReference: {fileID: 11400000, guid: 1f241a496d4f30324bfaafe17c0f01fc, type: 2}
-    - target: {fileID: 5713130699246010777, guid: f15aad8e793a3893baa5f0cbdaa97572, type: 3}
-      propertyPath: health
-      value: 1000
-      objectReference: {fileID: 0}
     - target: {fileID: 6095249997853336413, guid: f15aad8e793a3893baa5f0cbdaa97572, type: 3}
       propertyPath: m_Name
       value: Core

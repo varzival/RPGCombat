@@ -1,9 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Prefabs/UI/style.uss?fileID=7433441132597879392&amp;guid=ac4a7752cc69e00b8a264624a8e981cb&amp;type=3#style" />
     <ui:VisualElement name="Container" style="flex-grow: 1;">
-        <ui:VisualElement name="PlayerHealthContainer" class="hudTextContainer">
-            <ui:Label text="Player:" display-tooltip-when-elided="true" name="PlayerHealthLabel" class="hudText" />
-            <ui:Label text="100%" display-tooltip-when-elided="true" name="PlayerHealthValue" class="hudText" />
+        <ui:VisualElement name="PlayerContainer" class="twoColumnContainer">
+            <ui:VisualElement name="PlayerHealthContainer" class="hudTextContainer">
+                <ui:Label text="Player:" display-tooltip-when-elided="true" name="PlayerHealthLabel" class="hudText" />
+                <ui:Label text="100%" display-tooltip-when-elided="true" name="PlayerHealthValue" class="hudText" />
+            </ui:VisualElement>
+            <ui:VisualElement name="PlayerXPContainer" class="hudTextContainer">
+                <ui:Label text="XP" display-tooltip-when-elided="true" name="PlayerXPLabel" class="hudText" />
+                <ui:Label text="0" display-tooltip-when-elided="true" name="PlayerXPValue" class="hudText" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="EnemyHealthContainer" class="hudTextContainer">
             <ui:Label text="Enemy:" display-tooltip-when-elided="true" name="EnemyHealthLabel" class="hudText" />

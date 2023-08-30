@@ -24,29 +24,28 @@ namespace RPG.Stats
                 get { return characterClass; }
             }
 
-            [SerializeField]
-            float[] health;
-
-            public float GetHealthByLevel(int level)
+            [System.Serializable]
+            class ProgressionStat
             {
-                return health[level - 1];
+                public Stats stat;
+                public float[] levels;
             }
 
             [SerializeField]
-            float[] damage;
+            ProgressionStat[] stats;
 
-            public float GetDamageByLevel(int level)
+            public float GetStatByLevel(Stats stat, int level)
             {
-                return damage[level - 1];
+                return stats.Single((s) => s.stat == stat).levels[level - 1];
             }
         }
 
-        public float GetHealth(CharacterClass characterClass, int level)
+        public float GetStatByLevel(CharacterClass characterClass, Stats stat, int level)
         {
             ProgressionCharacterByClass pcbc = progressionCharacterByClass.Single(
                 (pcbc) => pcbc.CharacterClass == characterClass
             );
-            return pcbc.GetHealthByLevel(level);
+            return pcbc.GetStatByLevel(stat, level);
         }
     }
 }

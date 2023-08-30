@@ -9,10 +9,12 @@ namespace RPG.UI
     {
         Health playerHealth;
         Fighter playerFighter;
+        Experience playerExperience;
         Health enemyHealth;
 
         Label playerHealthValue;
         Label enemyHealthValue;
+        Label playerExperienceValue;
 
         private static string GetDisplayPercentageText(float value)
         {
@@ -23,11 +25,14 @@ namespace RPG.UI
         {
             VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
-            playerHealth = GameObject.FindWithTag("Player").GetComponent<Health>();
-            playerFighter = GameObject.FindWithTag("Player").GetComponent<Fighter>();
+            GameObject player = GameObject.FindWithTag("Player");
+            playerHealth = player.GetComponent<Health>();
+            playerFighter = player.GetComponent<Fighter>();
+            playerExperience = player.GetComponent<Experience>();
 
             playerHealthValue = root.Q<Label>("PlayerHealthValue");
             enemyHealthValue = root.Q<Label>("EnemyHealthValue");
+            playerExperienceValue = root.Q<Label>("PlayerXPValue");
             UnsetEnemyHealthText();
 
             playerHealth.HealthChanged += (float value) =>
@@ -35,6 +40,10 @@ namespace RPG.UI
                 playerHealthValue.text = GetDisplayPercentageText(value);
             };
             playerFighter.TargetChanged += SetEnemyTarget;
+            playerExperience.XPChanged += (float value) =>
+            {
+                playerExperienceValue.text = Mathf.RoundToInt(value) + "";
+            };
         }
 
         private void SetEnemyTarget(Health target)
