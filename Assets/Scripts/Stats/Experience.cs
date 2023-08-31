@@ -7,8 +7,10 @@ namespace RPG.Stats
     [RequireComponent(typeof(BaseStats))]
     public class Experience : MonoBehaviour, ISaveable
     {
-        [SerializeField]
         float experiencePoints = 0f;
+
+        [SerializeField]
+        GameObject levelUpEffect;
 
         BaseStats baseStats;
 
@@ -29,17 +31,18 @@ namespace RPG.Stats
         {
             int oldLevel = baseStats.Level;
             experiencePoints += value;
-            CheckNewLevelAndSendEvent(oldLevel);
+            CheckNewLevelAndLevelUp(oldLevel);
             XPChanged?.Invoke(experiencePoints);
         }
 
-        private void CheckNewLevelAndSendEvent(int oldLevel)
+        private void CheckNewLevelAndLevelUp(int oldLevel)
         {
             int newLevel = baseStats.Level;
             if (newLevel > oldLevel)
             {
                 Debug.Log($"Level of {gameObject} changed to {baseStats.Level}");
                 LevelChanged?.Invoke(newLevel);
+                Instantiate(levelUpEffect, transform);
             }
         }
 
@@ -52,7 +55,7 @@ namespace RPG.Stats
         {
             int oldLevel = baseStats.Level;
             experiencePoints = (float)state;
-            CheckNewLevelAndSendEvent(oldLevel);
+            CheckNewLevelAndLevelUp(oldLevel);
             XPChanged?.Invoke(experiencePoints);
             Debug.Log($"Level {gameObject} restored to {baseStats.Level}");
         }

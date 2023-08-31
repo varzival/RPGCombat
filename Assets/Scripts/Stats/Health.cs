@@ -50,7 +50,10 @@ namespace RPG.Stats
             {
                 experience.LevelChanged += (int level) =>
                 {
+                    float oldHealth = health;
+                    float oldMaxHealth = maxHealth;
                     maxHealth = baseStats.Health;
+                    health = Mathf.Ceil(oldHealth / oldMaxHealth * maxHealth);
                     HealthChanged?.Invoke(GetHealthFraction());
                 };
             }

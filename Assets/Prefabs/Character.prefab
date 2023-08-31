@@ -188,4 +188,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0270c72c886868eba8defee9ed615f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  experiencePoints: 0
+  levelUpEffect: {fileID: 2429101062997255142, guid: 9fa49bf8b6e476a27ae85c3743796a5a, type: 3}
