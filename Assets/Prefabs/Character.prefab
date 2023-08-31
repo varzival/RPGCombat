@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d009ed91afd54a93aa9ac8ea46ec8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
+  health: -1
 --- !u!114 &6836635887369020814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +174,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7811cb500f29bb2b0af3483d999303c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: 1
   characterClass: 0
   progression: {fileID: 11400000, guid: 1e4298c2b30192e2398b8ef61272d93a, type: 2}
 --- !u!114 &6825435377339919905

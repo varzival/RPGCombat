@@ -2,28 +2,58 @@ using UnityEngine;
 
 namespace RPG.Stats
 {
+    [RequireComponent(typeof(Experience))]
     public class BaseStats : MonoBehaviour
     {
-        [Range(1, 10)]
-        [SerializeField]
-        int level = 1;
-
         [SerializeField]
         CharacterClass characterClass;
 
         [SerializeField]
         Progression progression;
 
+        [SerializeField]
+        public int Level
+        {
+            get
+            {
+                int totalLevels = progression.GetStatLevels(
+                    characterClass,
+                    Stats.ExperienceToLevelUp
+                );
+                if (totalLevels == -1)
+                    return 1;
+
+                float currentXP = GetComponent<Experience>().ExperiencePoints;
+
+                float GetXPToLevel(int currentLevel)
+                {
+                    return progression.GetStatByLevel(
+                        characterClass,
+                        Stats.ExperienceToLevelUp,
+                        currentLevel
+                    );
+                }
+
+                for (int level = 1; level <= totalLevels; level++)
+                {
+                    float xpToLevelUp = GetXPToLevel(level);
+                    if (currentXP < xpToLevelUp)
+                        return level;
+                }
+                return totalLevels + 1;
+            }
+        }
+
         public float Health
         {
-            get { return progression.GetStatByLevel(characterClass, Stats.Health, level); }
+            get { return progression.GetStatByLevel(characterClass, Stats.Health, Level); }
         }
 
         public float ExperienceReward
         {
             get
             {
-                return progression.GetStatByLevel(characterClass, Stats.ExperienceReward, level);
+                return progression.GetStatByLevel(characterClass, Stats.ExperienceReward, Level);
             }
         }
     }

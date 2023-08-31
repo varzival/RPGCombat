@@ -15,6 +15,7 @@ namespace RPG.UI
         Label playerHealthValue;
         Label enemyHealthValue;
         Label playerExperienceValue;
+        Label playerLevelValue;
 
         private static string GetDisplayPercentageText(float value)
         {
@@ -33,6 +34,7 @@ namespace RPG.UI
             playerHealthValue = root.Q<Label>("PlayerHealthValue");
             enemyHealthValue = root.Q<Label>("EnemyHealthValue");
             playerExperienceValue = root.Q<Label>("PlayerXPValue");
+            playerLevelValue = root.Q<Label>("PlayerLevelValue");
             UnsetEnemyHealthText();
 
             playerHealth.HealthChanged += (float value) =>
@@ -43,6 +45,10 @@ namespace RPG.UI
             playerExperience.XPChanged += (float value) =>
             {
                 playerExperienceValue.text = Mathf.RoundToInt(value) + "";
+            };
+            playerExperience.LevelChanged += (int value) =>
+            {
+                playerLevelValue.text = value + "";
             };
         }
 

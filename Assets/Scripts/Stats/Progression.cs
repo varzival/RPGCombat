@@ -34,18 +34,45 @@ namespace RPG.Stats
             [SerializeField]
             ProgressionStat[] stats;
 
+            private ProgressionStat MatchingStat(Stats stat)
+            {
+                return stats.SingleOrDefault((s) => s.stat == stat);
+            }
+
             public float GetStatByLevel(Stats stat, int level)
             {
-                return stats.Single((s) => s.stat == stat).levels[level - 1];
+                ProgressionStat matchingStat = MatchingStat(stat);
+                if (matchingStat != null)
+                    return matchingStat.levels[level - 1];
+                else
+                    return -1;
             }
+
+            public int GetStatLevels(Stats stat)
+            {
+                ProgressionStat matchingStat = MatchingStat(stat);
+                if (matchingStat != null)
+                    return matchingStat.levels.Length;
+                else
+                    return -1;
+            }
+        }
+
+        private ProgressionCharacterByClass GetPCBCFromClass(CharacterClass characterClass)
+        {
+            return progressionCharacterByClass.SingleOrDefault(
+                (pcbc) => pcbc.CharacterClass == characterClass
+            );
         }
 
         public float GetStatByLevel(CharacterClass characterClass, Stats stat, int level)
         {
-            ProgressionCharacterByClass pcbc = progressionCharacterByClass.Single(
-                (pcbc) => pcbc.CharacterClass == characterClass
-            );
-            return pcbc.GetStatByLevel(stat, level);
+            return GetPCBCFromClass(characterClass).GetStatByLevel(stat, level);
+        }
+
+        public int GetStatLevels(CharacterClass characterClass, Stats stat)
+        {
+            return GetPCBCFromClass(characterClass).GetStatLevels(stat);
         }
     }
 }

@@ -17,6 +17,8 @@ namespace RPG.Stats
         float maxHealth = 0f;
         bool dead = false;
 
+        BaseStats baseStats;
+
         public bool IsDead
         {
             get { return dead; }
@@ -29,12 +31,29 @@ namespace RPG.Stats
             return health / maxHealth;
         }
 
+        private void Awake()
+        {
+            baseStats = GetComponent<BaseStats>();
+        }
+
         private void Start()
         {
             if (health == -1)
-                health = GetComponent<BaseStats>().Health;
-            maxHealth = GetComponent<BaseStats>().Health;
+            {
+                health = baseStats.Health;
+            }
+
+            maxHealth = baseStats.Health;
             HealthChanged?.Invoke(GetHealthFraction());
+
+            if (TryGetComponent(out Experience experience))
+            {
+                experience.LevelChanged += (int level) =>
+                {
+                    maxHealth = baseStats.Health;
+                    HealthChanged?.Invoke(GetHealthFraction());
+                };
+            }
         }
 
         public void TakeDamage(float damage, GameObject instigator)
