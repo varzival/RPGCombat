@@ -53,10 +53,7 @@ namespace RPG.Stats
 
         void ISaveable.RestoreState(object state)
         {
-            int oldLevel = baseStats.Level;
             experiencePoints = (float)state;
-            CheckNewLevelAndLevelUp(oldLevel);
-            XPChanged?.Invoke(experiencePoints);
             Debug.Log($"Level {gameObject} restored to {baseStats.Level}");
         }
     }

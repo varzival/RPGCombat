@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,10 +12,18 @@ namespace RPG.SceneManagement
         bool stopFadeIn = false;
         bool stopFadeOut = false;
 
+        public event Action<float> FadedTo;
+
         private void Start()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 1;
+        }
+
+        private void FadeToAlpha(float alpha)
+        {
+            canvasGroup.alpha = alpha;
+            FadedTo?.Invoke(alpha);
         }
 
         public IEnumerator FadeOut(float time)

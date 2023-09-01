@@ -58,6 +58,7 @@ namespace RPG.Stats
             maxHealth = baseStats.Health;
             HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
 
+            // Subscription must be done last to avoid race condition
             if (TryGetComponent(out Experience experience))
             {
                 experience.LevelChanged += (int level) =>
@@ -102,7 +103,6 @@ namespace RPG.Stats
         public void RestoreState(object state)
         {
             health = (float)state;
-            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
 
             if (health <= 0)
             {
@@ -116,6 +116,7 @@ namespace RPG.Stats
                 }
                 dead = false;
             }
+            maxHealth = baseStats.Health;
         }
 
         private void Die()

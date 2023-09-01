@@ -1,5 +1,5 @@
-using System;
 using RPG.Combat;
+using RPG.SceneManagement;
 using RPG.Stats;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,6 +12,8 @@ namespace RPG.UI
         Fighter playerFighter;
         Experience playerExperience;
         Health enemyHealth;
+        BaseStats playerBaseStats;
+        SavingWrapper savingWrapper;
 
         Label playerHealthValue;
         Label enemyHealthValue;
@@ -19,6 +21,8 @@ namespace RPG.UI
         Label enemyHealthPercentage;
         Label playerExperienceValue;
         Label playerLevelValue;
+
+        VisualElement fadeContainer;
 
         private static string GetDisplayPercentageText(float value)
         {
@@ -30,14 +34,9 @@ namespace RPG.UI
             return $"({Mathf.Round(health)}/{Mathf.Round(maxHealth)})";
         }
 
-        private void OnEnable()
+        private void Awake()
         {
             VisualElement root = GetComponent<UIDocument>().rootVisualElement;
-
-            GameObject player = GameObject.FindWithTag("Player");
-            playerHealth = player.GetComponent<Health>();
-            playerFighter = player.GetComponent<Fighter>();
-            playerExperience = player.GetComponent<Experience>();
 
             playerHealthValue = root.Q<Label>("PlayerHealthValue");
             enemyHealthValue = root.Q<Label>("EnemyHealthValue");
@@ -46,18 +45,59 @@ namespace RPG.UI
 
             playerExperienceValue = root.Q<Label>("PlayerXPValue");
             playerLevelValue = root.Q<Label>("PlayerLevelValue");
-            UnsetEnemyHealthText();
+
+            fadeContainer = root.Q<VisualElement>("FadeContainer");
+        }
+
+        private void OnEnable()
+        {
+            // Assign after Fader has been spawned in Awake in PersistentObjectSpawner
+            GameObject player = GameObject.FindWithTag("Player");
+            playerHealth = player.GetComponent<Health>();
+            playerFighter = player.GetComponent<Fighter>();
+            playerExperience = player.GetComponent<Experience>();
+            playerBaseStats = player.GetComponent<BaseStats>();
+            savingWrapper = FindObjectOfType<SavingWrapper>();
+            FindObjectOfType<Fader>().FadedTo += FadeToAlpha;
 
             playerHealth.HealthChanged += SetPlayerHealthText;
             playerFighter.TargetChanged += SetEnemyTarget;
-            playerExperience.XPChanged += (float value) =>
-            {
-                playerExperienceValue.text = Mathf.RoundToInt(value) + "";
-            };
-            playerExperience.LevelChanged += (int value) =>
-            {
-                playerLevelValue.text = value + "";
-            };
+            playerExperience.XPChanged += SetPlayerXPText;
+            playerExperience.LevelChanged += SetPlayerLevelText;
+            savingWrapper.SceneLoaded += InitializeDisplay;
+        }
+
+        private void InitializeDisplay()
+        {
+            UnsetEnemyHealthText();
+            SetPlayerHealthText(
+                playerHealth.GetHealthFraction(),
+                playerHealth.Value,
+                playerHealth.MaxValue
+            );
+            SetPlayerXPText(playerExperience.ExperiencePoints);
+            Debug.Break();
+            SetPlayerLevelText(playerBaseStats.Level);
+        }
+
+        private void Start()
+        {
+            InitializeDisplay();
+        }
+
+        private void FadeToAlpha(float alpha)
+        {
+            fadeContainer.style.backgroundColor = new StyleColor(new Color(0, 0, 0, alpha));
+        }
+
+        private void SetPlayerLevelText(int value)
+        {
+            playerLevelValue.text = value + "";
+        }
+
+        private void SetPlayerXPText(float value)
+        {
+            playerExperienceValue.text = Mathf.RoundToInt(value) + "";
         }
 
         private void SetEnemyTarget(Health target)

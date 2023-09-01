@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using RPG.Saving;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace RPG.SceneManagement
         float fadeInDuration = 3f;
         const string defaultSaveFile = "save.sav";
 
+        public event Action SceneLoaded;
+
         private void Start()
         {
             StartCoroutine(LoadOnStart());
@@ -18,6 +21,7 @@ namespace RPG.SceneManagement
         private IEnumerator LoadOnStart()
         {
             yield return GetComponent<SavingSystem>().LoadLastScene(defaultSaveFile);
+            SceneLoaded?.Invoke();
             yield return FindObjectOfType<Fader>().FadeIn(fadeInDuration);
         }
 
@@ -42,6 +46,7 @@ namespace RPG.SceneManagement
         public void Load()
         {
             GetComponent<SavingSystem>().Load(defaultSaveFile);
+            SceneLoaded?.Invoke();
         }
 
         public void Save()
