@@ -2,6 +2,7 @@ using RPG.Saving;
 using RPG.Core;
 using UnityEngine;
 using System;
+using GameDevTV.Utils;
 
 namespace RPG.Stats
 {
@@ -12,20 +13,19 @@ namespace RPG.Stats
     ]
     public class Health : MonoBehaviour, ISaveable
     {
-        [SerializeField]
-        float health = -1;
+        LazyValue<float> health;
+        LazyValue<float> maxHealth;
 
         public float Value
         {
-            get { return health; }
+            get { return health.value; }
         }
 
         public float MaxValue
         {
-            get { return maxHealth; }
+            get { return maxHealth.value; }
         }
 
-        float maxHealth = 0f;
         bool dead = false;
 
         BaseStats baseStats;
@@ -40,43 +40,45 @@ namespace RPG.Stats
 
         public float GetHealthFraction()
         {
-            return health / maxHealth;
+            return health.value / maxHealth.value;
         }
 
         private void Awake()
         {
             baseStats = GetComponent<BaseStats>();
+            health = new LazyValue<float>(() => baseStats.Health);
+            maxHealth = new LazyValue<float>(() => baseStats.Health);
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            if (health == -1)
-            {
-                health = baseStats.Health;
-            }
-
-            maxHealth = baseStats.Health;
-            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
-
             if (TryGetComponent(out Experience experience))
             {
                 experience.LevelChanged += (int level) =>
                 {
-                    float oldHealth = health;
-                    float oldMaxHealth = maxHealth;
-                    maxHealth = baseStats.Health;
-                    health = Mathf.Ceil(oldHealth / oldMaxHealth * maxHealth);
-                    HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
+                    float oldHealth = health.value;
+                    float oldMaxHealth = maxHealth.value;
+                    maxHealth.value = baseStats.Health;
+                    health.value = Mathf.Ceil(oldHealth / oldMaxHealth * maxHealth.value);
+                    //print($"Health levelled to {health.value}/{maxHealth.value}");
+                    HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
                 };
             }
         }
 
+        private void Start()
+        {
+            health.ForceInit();
+            maxHealth.ForceInit();
+            HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
+        }
+
         public void TakeDamage(float damage, GameObject instigator)
         {
-            health -= damage;
-            if (health <= 0)
+            health.value -= damage;
+            if (health.value <= 0)
             {
-                health = 0;
+                health.value = 0;
                 if (!dead)
                 {
                     Die();
@@ -90,21 +92,24 @@ namespace RPG.Stats
                     }
                 }
             }
-            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
+            HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
             Debug.Log($"health after hit: {health}");
         }
 
         public object CaptureState()
         {
-            return health;
+            return new Tuple<float, float>(health.value, maxHealth.value);
         }
 
         public void RestoreState(object state)
         {
-            health = (float)state;
-            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
+            Tuple<float, float> values = (Tuple<float, float>)state;
+            health.value = values.Item1;
+            maxHealth.value = values.Item2;
+            //print($"Health restored to {health.value}/{maxHealth.value}");
+            HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
 
-            if (health <= 0)
+            if (health.value <= 0)
             {
                 Die();
             }
