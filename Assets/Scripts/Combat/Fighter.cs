@@ -4,6 +4,7 @@ using RPG.Stats;
 using RPG.Saving;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace RPG.Combat
 {
@@ -13,7 +14,7 @@ namespace RPG.Combat
         RequireComponent(typeof(ActionScheduler)),
         RequireComponent(typeof(BaseStats))
     ]
-    public class Fighter : MonoBehaviour, IAction, ISaveable
+    public class Fighter : MonoBehaviour, IAction, ISaveable, IModifierProvider
     {
         public float WeaponRange
         {
@@ -152,12 +153,12 @@ namespace RPG.Combat
                         rightHandTransform,
                         leftHandTransform,
                         target,
-                        baseStats.DamageModifier,
+                        baseStats.Damage,
                         gameObject
                     );
                 }
                 else
-                    target.TakeDamage(baseStats.DamageModifier * WeaponDamage, gameObject);
+                    target.TakeDamage(baseStats.Damage, gameObject);
             }
             else
                 Debug.Log("target not in range");
@@ -179,6 +180,18 @@ namespace RPG.Combat
             string weaponName = (string)state;
             if (weaponName != null && weaponName != "")
                 EquipWeapon(Resources.Load<Weapon>(weaponName));
+        }
+
+        public IEnumerable<float> GetAdditiveProvider(Stats.Stats stat)
+        {
+            if (stat == Stats.Stats.Damage)
+                return new float[] { WeaponDamage };
+            return new float[] { };
+        }
+
+        public IEnumerable<float> GetMultiplicativeProvider(Stats.Stats stat)
+        {
+            return new float[] { };
         }
     }
 }
