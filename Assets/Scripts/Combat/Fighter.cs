@@ -10,7 +10,8 @@ namespace RPG.Combat
     [
         RequireComponent(typeof(Mover)),
         RequireComponent(typeof(Animator)),
-        RequireComponent(typeof(ActionScheduler))
+        RequireComponent(typeof(ActionScheduler)),
+        RequireComponent(typeof(BaseStats))
     ]
     public class Fighter : MonoBehaviour, IAction, ISaveable
     {
@@ -34,7 +35,7 @@ namespace RPG.Combat
             }
         }
 
-        public float Damage
+        public float WeaponDamage
         {
             get
             {
@@ -53,6 +54,8 @@ namespace RPG.Combat
         [SerializeField]
         Transform leftHandTransform;
 
+        BaseStats baseStats;
+
         Weapon currentWeapon;
 
         Health target;
@@ -64,6 +67,11 @@ namespace RPG.Combat
         }
 
         public event Action<Health> TargetChanged;
+
+        private void Awake()
+        {
+            baseStats = GetComponent<BaseStats>();
+        }
 
         private void Start()
         {
@@ -144,11 +152,12 @@ namespace RPG.Combat
                         rightHandTransform,
                         leftHandTransform,
                         target,
+                        baseStats.DamageModifier,
                         gameObject
                     );
                 }
                 else
-                    target.TakeDamage(Damage, gameObject);
+                    target.TakeDamage(baseStats.DamageModifier * WeaponDamage, gameObject);
             }
             else
                 Debug.Log("target not in range");

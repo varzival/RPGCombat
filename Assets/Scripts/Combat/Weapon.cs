@@ -99,6 +99,7 @@ namespace RPG.Combat
             Transform rightHandTransform,
             Transform leftHandTransform,
             Health target,
+            float damageModifier,
             GameObject instigator
         )
         {
@@ -109,7 +110,7 @@ namespace RPG.Combat
                 isRightHanded ? rightHandTransform.position : leftHandTransform.position,
                 Quaternion.identity
             );
-            projectileInstance.SetTarget(target, damage, instigator);
+            projectileInstance.SetTarget(target, damageModifier * damage, instigator);
         }
     }
 }

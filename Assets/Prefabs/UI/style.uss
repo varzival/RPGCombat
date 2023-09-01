@@ -24,3 +24,7 @@
 .extraMarginRight {
     margin-right: 10px;
 }
+
+.fixedWidthText {
+    width: 110px;
+}

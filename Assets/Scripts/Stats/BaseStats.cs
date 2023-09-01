@@ -56,5 +56,10 @@ namespace RPG.Stats
                 return progression.GetStatByLevel(characterClass, Stats.ExperienceReward, Level);
             }
         }
+
+        public float DamageModifier
+        {
+            get { return progression.GetStatByLevel(characterClass, Stats.DamageModifier, Level); }
+        }
     }
 }

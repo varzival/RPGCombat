@@ -14,6 +14,17 @@ namespace RPG.Stats
     {
         [SerializeField]
         float health = -1;
+
+        public float Value
+        {
+            get { return health; }
+        }
+
+        public float MaxValue
+        {
+            get { return maxHealth; }
+        }
+
         float maxHealth = 0f;
         bool dead = false;
 
@@ -24,7 +35,8 @@ namespace RPG.Stats
             get { return dead; }
         }
 
-        public event Action<float> HealthChanged;
+        // Health Fraction, Health, maxHealth
+        public event Action<float, float, float> HealthChanged;
 
         public float GetHealthFraction()
         {
@@ -44,7 +56,7 @@ namespace RPG.Stats
             }
 
             maxHealth = baseStats.Health;
-            HealthChanged?.Invoke(GetHealthFraction());
+            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
 
             if (TryGetComponent(out Experience experience))
             {
@@ -54,7 +66,7 @@ namespace RPG.Stats
                     float oldMaxHealth = maxHealth;
                     maxHealth = baseStats.Health;
                     health = Mathf.Ceil(oldHealth / oldMaxHealth * maxHealth);
-                    HealthChanged?.Invoke(GetHealthFraction());
+                    HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
                 };
             }
         }
@@ -78,7 +90,7 @@ namespace RPG.Stats
                     }
                 }
             }
-            HealthChanged?.Invoke(GetHealthFraction());
+            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
             Debug.Log($"health after hit: {health}");
         }
 
@@ -90,7 +102,7 @@ namespace RPG.Stats
         public void RestoreState(object state)
         {
             health = (float)state;
-            HealthChanged?.Invoke(GetHealthFraction());
+            HealthChanged?.Invoke(GetHealthFraction(), health, maxHealth);
 
             if (health <= 0)
             {
