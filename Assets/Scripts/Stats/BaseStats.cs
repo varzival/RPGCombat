@@ -58,7 +58,6 @@ namespace RPG.Stats
             float value = 0;
             foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
             {
-                print($"Provider {provider}");
                 foreach (float additiveModifier in provider.GetAdditiveProvider(stat))
                 {
                     value += additiveModifier;
@@ -72,7 +71,6 @@ namespace RPG.Stats
             float value = 1;
             foreach (IModifierProvider provider in GetComponents<IModifierProvider>())
             {
-                print($"Provider {provider}");
                 foreach (float multiplicativeModifier in provider.GetMultiplicativeProvider(stat))
                 {
                     value *= multiplicativeModifier;

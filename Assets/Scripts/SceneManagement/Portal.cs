@@ -33,7 +33,7 @@ namespace RPG.SceneManagement
 
         private void Start()
         {
-            fader = GameObject.FindObjectOfType<Fader>();
+            fader = FindObjectOfType<Fader>();
         }
 
         private void OnTriggerEnter(Collider other)

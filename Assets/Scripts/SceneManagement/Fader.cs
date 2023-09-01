@@ -7,22 +7,28 @@ namespace RPG.SceneManagement
     {
         CanvasGroup canvasGroup;
 
+        // avoids issues when starting a coroutine while the other one is running
+        bool stopFadeIn = false;
+        bool stopFadeOut = false;
+
         private void Start()
         {
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 1;
         }
 
-        IEnumerator FadeOutIn()
-        {
-            yield return FadeOut(3f);
-            yield return FadeIn(1f);
-        }
-
         public IEnumerator FadeOut(float time)
         {
-            while (canvasGroup.alpha < 1 - Mathf.Epsilon)
+            stopFadeIn = true;
+            stopFadeOut = false;
+            canvasGroup.alpha = 0;
+            while (canvasGroup.alpha < 1 - Mathf.Epsilon * 10)
             {
+                if (stopFadeOut)
+                {
+                    stopFadeOut = false;
+                    yield break;
+                }
                 float deltaAlpha = Time.deltaTime / time;
                 canvasGroup.alpha += deltaAlpha;
                 yield return null;
@@ -31,8 +37,16 @@ namespace RPG.SceneManagement
 
         public IEnumerator FadeIn(float time)
         {
-            while (canvasGroup.alpha > 0 + Mathf.Epsilon)
+            stopFadeIn = false;
+            stopFadeOut = true;
+            canvasGroup.alpha = 1;
+            while (canvasGroup.alpha > 0 + Mathf.Epsilon * 10)
             {
+                if (stopFadeIn)
+                {
+                    stopFadeIn = false;
+                    yield break;
+                }
                 float deltaAlpha = Time.deltaTime / time;
                 canvasGroup.alpha -= deltaAlpha;
                 yield return null;

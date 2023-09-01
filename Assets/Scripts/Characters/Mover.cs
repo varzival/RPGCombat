@@ -13,48 +13,52 @@ namespace RPG.Characters
     ]
     public class Mover : MonoBehaviour, IAction, ISaveable
     {
-        NavMeshAgent agent;
+        NavMeshAgent navMeshAgent;
         Health health;
+        ActionScheduler actionScheduler;
 
-        private void Start()
+        private void Awake()
         {
-            agent = GetComponent<NavMeshAgent>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
             health = GetComponent<Health>();
+            actionScheduler = GetComponent<ActionScheduler>();
         }
 
         public void StartMoveAction(Vector3 to)
         {
             MoveTo(to);
-            GetComponent<ActionScheduler>().StartAction(this);
+            actionScheduler.StartAction(this);
         }
 
         public void MoveTo(Vector3 to)
         {
-            agent.isStopped = false;
-            agent.destination = to;
+            navMeshAgent.isStopped = false;
+            navMeshAgent.destination = to;
         }
 
         public void SetSpeed(float speed)
         {
-            agent.speed = speed;
+            navMeshAgent.speed = speed;
         }
 
         public void Cancel()
         {
-            agent.isStopped = true;
+            navMeshAgent.isStopped = true;
         }
 
         // Update is called once per frame
         void Update()
         {
-            agent.enabled = !health.IsDead;
+            navMeshAgent.enabled = !health.IsDead;
 
             UpdateAnimator();
         }
 
         private void UpdateAnimator()
         {
-            Vector3 localVelocity = transform.worldToLocalMatrix.MultiplyVector(agent.velocity);
+            Vector3 localVelocity = transform.worldToLocalMatrix.MultiplyVector(
+                navMeshAgent.velocity
+            );
             //Vector3 localVelocity = transform.InverseTransformDirection(GetComponent<NavMeshAgent>().velocity);
             GetComponent<Animator>()
                 .SetFloat("ForwardSpeed", localVelocity.z);
@@ -68,8 +72,8 @@ namespace RPG.Characters
         public void RestoreState(object state)
         {
             SerializableVector3 vector3 = (SerializableVector3)state;
-            GetComponent<NavMeshAgent>().Warp(vector3.toVector3());
-            GetComponent<ActionScheduler>().CancelCurrentAction();
+            navMeshAgent.Warp(vector3.toVector3());
+            actionScheduler.CancelCurrentAction();
         }
     }
 }

@@ -575,10 +575,6 @@ PrefabInstance:
       propertyPath: sceneToLoad
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1362349258, guid: fc6b81be479a7b5989ecbe9d5321314d, type: 3}
-      propertyPath: fadeOutDuration
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 3817373780431097, guid: fc6b81be479a7b5989ecbe9d5321314d, type: 3}
       propertyPath: m_RootOrder
       value: 1

@@ -23,6 +23,7 @@ namespace RPG.Saving
             Dictionary<string, object> currentState = CaptureState();
             currentState.ToList().ForEach(x => state[x.Key] = x.Value);
             SaveFile(saveFile, state);
+            Debug.Log("Game saved.");
         }
 
         public IEnumerator LoadLastScene(string saveFile)
