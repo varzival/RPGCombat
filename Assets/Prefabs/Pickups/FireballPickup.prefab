@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 11400000, guid: b2f469b47f929ec83ad14854d57fd371, type: 2}
+  cursorType: 5
+  respawnTime: 5
 --- !u!65 &3892655547495850817
 BoxCollider:
   m_ObjectHideFlags: 0

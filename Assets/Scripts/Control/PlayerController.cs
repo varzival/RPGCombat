@@ -5,7 +5,6 @@ using RPG.Core;
 using RPG.Stats;
 using System;
 using System.Linq;
-using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace RPG.CharacterControl
@@ -18,13 +17,6 @@ namespace RPG.CharacterControl
     public class PlayerController : MonoBehaviour
     {
         Health health;
-
-        enum CursorType
-        {
-            None,
-            Movement,
-            Combat
-        }
 
         [Serializable]
         struct CursorMapping
@@ -64,7 +56,7 @@ namespace RPG.CharacterControl
                 return;
             }
 
-            if (InteractWithCombat())
+            if (InteractWithComponent())
             {
                 return;
             }
@@ -79,32 +71,29 @@ namespace RPG.CharacterControl
             SetCursor(CursorType.None);
         }
 
+        private bool InteractWithComponent()
+        {
+            RaycastHit[] raycastHits = Physics.RaycastAll(GetMouseRay());
+            foreach (RaycastHit hit in raycastHits)
+            {
+                if (hit.transform.gameObject.TryGetComponent(out IRaycastable raycastable))
+                {
+                    if (raycastable.HandleRaycast(this, hit.point))
+                    {
+                        SetCursor(raycastable.GetCursorType());
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private bool InteractWithUI()
         {
             if (MouseInsideUI())
             {
                 SetCursor(CursorType.None);
                 return true;
-            }
-            return false;
-        }
-
-        private bool InteractWithCombat()
-        {
-            RaycastHit[] raycastHits = Physics.RaycastAll(GetMouseRay());
-            foreach (RaycastHit hit in raycastHits)
-            {
-                if (hit.transform.gameObject.TryGetComponent(out CombatTarget target))
-                {
-                    if (!target.CanBeAttacked())
-                        continue;
-                    if (Input.GetMouseButton(0))
-                    {
-                        GetComponent<Fighter>().Attack(target.GetComponent<Health>());
-                    }
-                    SetCursor(CursorType.Combat);
-                    return true;
-                }
             }
             return false;
         }
