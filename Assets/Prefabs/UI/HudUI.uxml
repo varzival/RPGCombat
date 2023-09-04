@@ -1,12 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Prefabs/UI/style.uss?fileID=7433441132597879392&amp;guid=ac4a7752cc69e00b8a264624a8e981cb&amp;type=3#style" />
-    <ui:VisualElement name="Container" style="flex-grow: 1;">
-        <ui:VisualElement name="PlayerContainer" class="twoColumnContainer marginContainer">
+    <ui:VisualElement name="Container" style="flex-direction: row; justify-content: space-between; flex-grow: 0; flex-shrink: 1; align-items: flex-start;">
+        <ui:VisualElement name="HealthContainer" class="marginContainer rowContainer" style="overflow: visible; width: auto; visibility: visible;">
             <ui:VisualElement name="PlayerHealthContainer" class="hudTextContainer">
                 <ui:Label text="Player:" display-tooltip-when-elided="true" name="PlayerHealthLabel" class="hudText fixedWidthText" />
                 <ui:Label text="100%" display-tooltip-when-elided="true" name="PlayerHealthPercentage" class="hudText fixedWidthText" />
-                <ui:Label text="(100/100)" display-tooltip-when-elided="true" name="PlayerHealthValue" class="hudText fixedWidthText" />
+                <ui:Label text="(100/100)" display-tooltip-when-elided="true" name="PlayerHealthValue" class="hudText" />
             </ui:VisualElement>
+            <ui:VisualElement name="EnemyHealthContainer" class="hudTextContainer">
+                <ui:Label text="Enemy:" display-tooltip-when-elided="true" name="EnemyHealthLabel" class="hudText fixedWidthText" />
+                <ui:Label text="100%" display-tooltip-when-elided="true" name="EnemyHealthPercentage" class="hudText fixedWidthText" />
+                <ui:Label text="(100/100)" display-tooltip-when-elided="true" name="EnemyHealthValue" class="hudText" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="ExperienceContainer" class="rowContainer marginContainer" style="align-items: flex-end; height: auto;">
             <ui:VisualElement name="PlayerXPAndLevelContainer" class="hudTextContainer">
                 <ui:VisualElement name="PlayerXPContainer" class="hudTextContainer extraMarginRight">
                     <ui:Label text="XP" display-tooltip-when-elided="true" name="PlayerXPLabel" class="hudText" />
@@ -17,11 +24,6 @@
                     <ui:Label text="1" display-tooltip-when-elided="true" name="PlayerLevelValue" class="hudText" />
                 </ui:VisualElement>
             </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement name="EnemyHealthContainer" class="hudTextContainer marginContainer">
-            <ui:Label text="Enemy:" display-tooltip-when-elided="true" name="EnemyHealthLabel" class="hudText fixedWidthText" />
-            <ui:Label text="100%" display-tooltip-when-elided="true" name="EnemyHealthPercentage" class="hudText fixedWidthText" />
-            <ui:Label text="(100/100)" display-tooltip-when-elided="true" name="EnemyHealthValue" class="hudText fixedWidthText" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

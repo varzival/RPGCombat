@@ -1,4 +1,4 @@
-using System;
+using RPG.CharacterControl;
 using RPG.Combat;
 using RPG.Stats;
 using UnityEngine;
@@ -11,8 +11,10 @@ namespace RPG.UI
         Health playerHealth;
         Fighter playerFighter;
         Experience playerExperience;
+        PlayerController playerController;
         Health enemyHealth;
 
+        VisualElement root;
         Label playerHealthValue;
         Label enemyHealthValue;
         Label playerHealthPercentage;
@@ -32,12 +34,13 @@ namespace RPG.UI
 
         private void OnEnable()
         {
-            VisualElement root = GetComponent<UIDocument>().rootVisualElement;
+            root = GetComponent<UIDocument>().rootVisualElement;
 
             GameObject player = GameObject.FindWithTag("Player");
             playerHealth = player.GetComponent<Health>();
             playerFighter = player.GetComponent<Fighter>();
             playerExperience = player.GetComponent<Experience>();
+            playerController = player.GetComponent<PlayerController>();
 
             playerHealthValue = root.Q<Label>("PlayerHealthValue");
             enemyHealthValue = root.Q<Label>("EnemyHealthValue");
@@ -58,6 +61,17 @@ namespace RPG.UI
             {
                 playerLevelValue.text = value + "";
             };
+        }
+
+        private void Start()
+        {
+            // These Elements will count as UI and block player interaction
+            VisualElement[] uiElements = new VisualElement[]
+            {
+                root.Q<VisualElement>("HealthContainer"),
+                root.Q<VisualElement>("ExperienceContainer")
+            };
+            playerController.SetUIVisualElements(uiElements, root);
         }
 
         private void SetEnemyTarget(Health target)
