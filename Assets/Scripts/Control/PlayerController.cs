@@ -5,7 +5,8 @@ using RPG.Core;
 using RPG.Stats;
 using System;
 using System.Linq;
-using UnityEngine.UIElements;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 namespace RPG.CharacterControl
 {
@@ -29,18 +30,24 @@ namespace RPG.CharacterControl
         [SerializeField]
         CursorMapping[] cursorMappings;
 
-        VisualElement[] UIVisualElements;
-        VisualElement root;
+        [SerializeField]
+        GameObject[] uiElementGameObjects;
 
-        public void SetUIVisualElements(VisualElement[] UIVisualElements, VisualElement root)
-        {
-            this.UIVisualElements = UIVisualElements;
-            this.root = root;
-        }
+        IEnumerable<IUIElements> uiElements;
 
         private void Start()
         {
             health = GetComponent<Health>();
+            uiElements = uiElementGameObjects
+                .Select((go) => go.GetInterfaces<IUIElements>())
+                .Aggregate(
+                    new List<IUIElements>(),
+                    (current, next) =>
+                    {
+                        current.AddRange(next);
+                        return current;
+                    }
+                );
         }
 
         // Update is called once per frame
@@ -73,7 +80,7 @@ namespace RPG.CharacterControl
 
         private bool InteractWithComponent()
         {
-            RaycastHit[] raycastHits = Physics.RaycastAll(GetMouseRay());
+            RaycastHit[] raycastHits = RaycastAllSorted();
             foreach (RaycastHit hit in raycastHits)
             {
                 if (hit.transform.gameObject.TryGetComponent(out IRaycastable raycastable))
@@ -90,10 +97,13 @@ namespace RPG.CharacterControl
 
         private bool InteractWithUI()
         {
-            if (MouseInsideUI())
+            foreach (IUIElements uel in uiElements)
             {
-                SetCursor(CursorType.None);
-                return true;
+                if (uel.HandleMouseInUI())
+                {
+                    SetCursor(uel.GetCursorType());
+                    return true;
+                }
             }
             return false;
         }
@@ -118,23 +128,12 @@ namespace RPG.CharacterControl
             return Camera.main.ScreenPointToRay(Input.mousePosition);
         }
 
-        private bool MouseInsideUI()
+        private RaycastHit[] RaycastAllSorted()
         {
-            if (root == null || UIVisualElements == null || UIVisualElements.Length == 0)
-                return false;
-
-            foreach (VisualElement v in UIVisualElements)
-            {
-                Vector2 screenPosition = new Vector2(
-                    Input.mousePosition.x,
-                    root.resolvedStyle.height - Input.mousePosition.y
-                );
-
-                Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(root.panel, screenPosition);
-                if (v.worldBound.Contains(panelPosition))
-                    return true;
-            }
-            return false;
+            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
+            IEnumerable<float> distances = hits.Select((h) => h.distance);
+            Array.Sort(distances.ToArray(), hits);
+            return hits;
         }
 
         private CursorMapping GetCursorMapping(CursorType cursorType)
