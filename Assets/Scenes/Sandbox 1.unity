@@ -4857,5 +4857,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Terrain
       objectReference: {fileID: 0}
+    - target: {fileID: 7934883479926708126, guid: 52cccf94677c1c5cbad594c43e099d01, type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52cccf94677c1c5cbad594c43e099d01, type: 3}
