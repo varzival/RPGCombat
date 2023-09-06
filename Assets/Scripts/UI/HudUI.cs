@@ -1,5 +1,6 @@
 using RPG.CharacterControl;
 using RPG.Combat;
+using RPG.SceneManagement;
 using RPG.Stats;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -62,7 +63,7 @@ namespace RPG.UI
             };
         }
 
-        private void Start()
+        void Start()
         {
             // These Elements will count as UI and block player interaction
             UIVisualElements = new VisualElement[]
@@ -70,6 +71,10 @@ namespace RPG.UI
                 root.Q<VisualElement>("HealthContainer"),
                 root.Q<VisualElement>("ExperienceContainer")
             };
+            SetUIAlpha(1f); // set opacity to 0
+
+            Fader fader = FindObjectOfType<Fader>();
+            fader.SetAlpha += SetUIAlpha;
         }
 
         private void SetEnemyTarget(Health target)
@@ -105,6 +110,15 @@ namespace RPG.UI
         {
             enemyHealthPercentage.text = "N/A";
             enemyHealthValue.text = "N/A";
+        }
+
+        private void SetUIAlpha(float faderAlpha)
+        {
+            // Fader returns reverse alpha value
+            foreach (VisualElement v in UIVisualElements)
+            {
+                v.style.opacity = 1 - faderAlpha;
+            }
         }
 
         public CursorType GetCursorType()

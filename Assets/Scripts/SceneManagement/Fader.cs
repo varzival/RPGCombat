@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace RPG.SceneManagement
         // avoids issues when starting a coroutine while the other one is running
         bool stopFadeIn = false;
         bool stopFadeOut = false;
+
+        public event Action<float> SetAlpha;
 
         private void Start()
         {
@@ -31,6 +34,7 @@ namespace RPG.SceneManagement
                 }
                 float deltaAlpha = Time.deltaTime / time;
                 canvasGroup.alpha += deltaAlpha;
+                SetAlpha?.Invoke(canvasGroup.alpha);
                 yield return null;
             }
         }
@@ -49,6 +53,7 @@ namespace RPG.SceneManagement
                 }
                 float deltaAlpha = Time.deltaTime / time;
                 canvasGroup.alpha -= deltaAlpha;
+                SetAlpha?.Invoke(canvasGroup.alpha);
                 yield return null;
             }
         }

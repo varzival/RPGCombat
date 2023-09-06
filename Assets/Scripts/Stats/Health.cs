@@ -3,6 +3,7 @@ using RPG.Core;
 using UnityEngine;
 using System;
 using GameDevTV.Utils;
+using UnityEngine.Events;
 
 namespace RPG.Stats
 {
@@ -37,6 +38,9 @@ namespace RPG.Stats
 
         // Health Fraction, Health, maxHealth
         public event Action<float, float, float> HealthChanged;
+
+        [SerializeField]
+        UnityEvent takeDamage;
 
         public float GetHealthFraction()
         {
@@ -93,6 +97,7 @@ namespace RPG.Stats
                 }
             }
             HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
+            takeDamage?.Invoke();
             Debug.Log($"health after hit: {health}");
         }
 
