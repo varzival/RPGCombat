@@ -1,6 +1,7 @@
 using System;
 using RPG.Saving;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.Stats
 {
@@ -27,6 +28,9 @@ namespace RPG.Stats
         public event Action<float> XPChanged;
         public event Action<int> LevelChanged;
 
+        [SerializeField]
+        UnityEvent LevelUp;
+
         public void AwardXP(float value)
         {
             int oldLevel = baseStats.Level;
@@ -42,6 +46,7 @@ namespace RPG.Stats
             {
                 Debug.Log($"Level of {gameObject} changed to {baseStats.Level}");
                 LevelChanged?.Invoke(newLevel);
+                LevelUp?.Invoke();
                 Instantiate(levelUpEffect, transform);
             }
         }
