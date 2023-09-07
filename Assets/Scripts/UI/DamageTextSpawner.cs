@@ -9,7 +9,12 @@ namespace RPG.UI
 
         public void Spawn(float value)
         {
-            Instantiate(DamageText, transform.position, Quaternion.identity);
+            GameObject damageText = Instantiate(
+                DamageText,
+                transform.position,
+                Quaternion.identity
+            );
+            damageText.GetComponentInChildren<DamageText>().SetTextValue(value);
         }
     }
 }

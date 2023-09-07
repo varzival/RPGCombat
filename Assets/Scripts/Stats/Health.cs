@@ -40,7 +40,7 @@ namespace RPG.Stats
         public event Action<float, float, float> HealthChanged;
 
         [SerializeField]
-        UnityEvent takeDamage;
+        UnityEvent<float> takeDamage;
 
         public float GetHealthFraction()
         {
@@ -97,7 +97,7 @@ namespace RPG.Stats
                 }
             }
             HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
-            takeDamage?.Invoke();
+            takeDamage?.Invoke(damage);
             Debug.Log($"health after hit: {health}");
         }
 
