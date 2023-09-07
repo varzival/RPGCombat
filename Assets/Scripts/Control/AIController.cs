@@ -5,6 +5,7 @@ using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.CharacterControl
 {
@@ -42,6 +43,10 @@ namespace RPG.CharacterControl
         int currentWaypointIndex = 0;
         float timeSinceLastSawPlayer = Mathf.Infinity;
         float timeSinceLastWaypoint = 0;
+        bool aggro = false;
+
+        [SerializeField]
+        UnityEvent TriggerAggro;
 
         private void Start()
         {
@@ -65,6 +70,7 @@ namespace RPG.CharacterControl
                 fighter.Attack(player.GetComponent<Health>());
                 timeSinceLastSawPlayer = 0;
                 mover.SetSpeed(chaseSpeed);
+                SetAggro(true);
             }
             else if (timeSinceLastSawPlayer <= suspicionTime)
             {
@@ -96,6 +102,18 @@ namespace RPG.CharacterControl
                 }
                 mover.StartMoveAction(moveTo);
             }
+
+            if (timeSinceLastSawPlayer > suspicionTime)
+            {
+                SetAggro(false);
+            }
+        }
+
+        private void SetAggro(bool value)
+        {
+            if (!aggro && value)
+                TriggerAggro?.Invoke();
+            aggro = value;
         }
 
         // Called by Unity

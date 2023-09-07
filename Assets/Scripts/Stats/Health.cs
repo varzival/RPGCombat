@@ -42,6 +42,9 @@ namespace RPG.Stats
         [SerializeField]
         UnityEvent<float> takeDamage;
 
+        [SerializeField]
+        UnityEvent die;
+
         public float GetHealthFraction()
         {
             return health.value / maxHealth.value;
@@ -132,6 +135,7 @@ namespace RPG.Stats
         {
             dead = true;
             GetComponent<Animator>().SetTrigger("Die");
+            die?.Invoke();
         }
     }
 }

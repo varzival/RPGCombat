@@ -1,5 +1,6 @@
 using RPG.Stats;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RPG.Combat
 {
@@ -21,14 +22,24 @@ namespace RPG.Combat
         [SerializeField]
         GameObject impactEffect;
 
+        [SerializeField]
+        GameObject[] destroyOnImpact;
+
         GameObject instigator;
 
         float currentAliveTime = 0f;
+
+        [SerializeField]
+        UnityEvent ProjectileLaunched;
+
+        [SerializeField]
+        UnityEvent ProjectileHit;
 
         // Start is called before the first frame update
         void Start()
         {
             transform.LookAt(GetAimLocation());
+            ProjectileLaunched?.Invoke();
         }
 
         // Update is called once per frame
@@ -68,7 +79,11 @@ namespace RPG.Combat
                     targetHealth.TakeDamage(damage, instigator);
                     if (impactEffect != null)
                         Instantiate(impactEffect, transform.position, transform.rotation);
-                    Destroy(gameObject);
+                    ProjectileHit?.Invoke();
+                    foreach (GameObject g in destroyOnImpact)
+                    {
+                        Destroy(g);
+                    }
                 }
             }
         }
