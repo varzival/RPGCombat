@@ -86,6 +86,12 @@ namespace RPG.CharacterControl
             SetCursor(CursorType.None);
         }
 
+        public void SetEnabled(bool enabled)
+        {
+            SetCursor(CursorType.None);
+            this.enabled = enabled;
+        }
+
         private bool InteractWithComponent()
         {
             RaycastHit[] raycastHits = RaycastAllSorted();

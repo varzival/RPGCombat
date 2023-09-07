@@ -9,8 +9,7 @@ namespace RPG.SceneManagement
         CanvasGroup canvasGroup;
 
         // avoids issues when starting a coroutine while the other one is running
-        bool stopFadeIn = false;
-        bool stopFadeOut = false;
+        Coroutine currentCoroutine = null;
 
         public event Action<float> SetAlpha;
 
@@ -22,37 +21,30 @@ namespace RPG.SceneManagement
 
         public IEnumerator FadeOut(float time)
         {
-            stopFadeIn = true;
-            stopFadeOut = false;
-            canvasGroup.alpha = 0;
-            while (canvasGroup.alpha < 1 - Mathf.Epsilon * 10)
-            {
-                if (stopFadeOut)
-                {
-                    stopFadeOut = false;
-                    yield break;
-                }
-                float deltaAlpha = Time.deltaTime / time;
-                canvasGroup.alpha += deltaAlpha;
-                SetAlpha?.Invoke(canvasGroup.alpha);
-                yield return null;
-            }
+            yield return Fade(1f, time);
         }
 
         public IEnumerator FadeIn(float time)
         {
-            stopFadeIn = false;
-            stopFadeOut = true;
-            canvasGroup.alpha = 1;
-            while (canvasGroup.alpha > 0 + Mathf.Epsilon * 10)
+            yield return Fade(0f, time);
+        }
+
+        private IEnumerator Fade(float targetAlpha, float time)
+        {
+            if (currentCoroutine != null)
             {
-                if (stopFadeIn)
-                {
-                    stopFadeIn = false;
-                    yield break;
-                }
+                StopCoroutine(currentCoroutine);
+            }
+            currentCoroutine = StartCoroutine(FadeRoutine(targetAlpha, time));
+            yield return currentCoroutine;
+        }
+
+        private IEnumerator FadeRoutine(float targetAlpha, float time)
+        {
+            while (!Mathf.Approximately(canvasGroup.alpha, targetAlpha))
+            {
                 float deltaAlpha = Time.deltaTime / time;
-                canvasGroup.alpha -= deltaAlpha;
+                canvasGroup.alpha += deltaAlpha * Mathf.Sign(targetAlpha - canvasGroup.alpha);
                 SetAlpha?.Invoke(canvasGroup.alpha);
                 yield return null;
             }

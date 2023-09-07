@@ -21,12 +21,12 @@ namespace RPG.Cinematics
         {
             player.GetComponent<ActionScheduler>().CancelCurrentAction();
             player.GetComponent<Mover>().Cancel();
-            player.GetComponent<PlayerController>().enabled = false;
+            player.GetComponent<PlayerController>().SetEnabled(false);
         }
 
         void EnableControl(PlayableDirector playableDirector)
         {
-            player.GetComponent<PlayerController>().enabled = true;
+            player.GetComponent<PlayerController>().SetEnabled(true);
         }
     }
 }

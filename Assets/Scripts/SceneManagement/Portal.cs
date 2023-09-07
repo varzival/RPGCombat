@@ -1,4 +1,5 @@
 using System.Collections;
+using RPG.CharacterControl;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -44,9 +45,15 @@ namespace RPG.SceneManagement
             }
         }
 
+        private void SetPlayerControl(bool enabled)
+        {
+            GameObject.FindWithTag("Player").GetComponent<PlayerController>().SetEnabled(enabled);
+        }
+
         private IEnumerator Transition()
         {
             DontDestroyOnLoad(gameObject);
+            SetPlayerControl(false);
 
             yield return fader.FadeOut(fadeOutDuration);
 
@@ -54,6 +61,8 @@ namespace RPG.SceneManagement
 
             yield return SceneManager.LoadSceneAsync(sceneToLoad);
             Debug.Log($"Scene {sceneToLoad} loaded");
+            // a new player gameobject spawned in, disable control too
+            SetPlayerControl(false);
 
             // waiting for one frame fixes issues with player positioning
             yield return null;
@@ -72,8 +81,9 @@ namespace RPG.SceneManagement
             FindObjectOfType<SavingWrapper>().Save();
 
             yield return new WaitForSeconds(1f);
-            yield return fader.FadeIn(fadeInDuration);
+            StartCoroutine(fader.FadeIn(fadeInDuration));
 
+            SetPlayerControl(true);
             Destroy(gameObject);
         }
 
@@ -91,12 +101,8 @@ namespace RPG.SceneManagement
         public bool SpawnPlayer()
         {
             GameObject player = GameObject.FindWithTag("Player");
-            //player.GetComponent<NavMeshAgent>().enabled = false;
             player.transform.rotation = spawnPoint.transform.rotation;
-            //player.transform.position = spawnPoint.transform.position;
             return player.GetComponent<NavMeshAgent>().Warp(spawnPoint.transform.position);
-            //player.GetComponent<NavMeshAgent>().enabled = true;
-            //return true;
         }
     }
 }
