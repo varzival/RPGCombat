@@ -10,9 +10,6 @@ namespace RPG.Stats
     {
         float experiencePoints = 0f;
 
-        [SerializeField]
-        GameObject levelUpEffect;
-
         BaseStats baseStats;
 
         public float ExperiencePoints
@@ -39,15 +36,15 @@ namespace RPG.Stats
             XPChanged?.Invoke(experiencePoints);
         }
 
-        private void CheckNewLevelAndLevelUp(int oldLevel)
+        private void CheckNewLevelAndLevelUp(int oldLevel, bool fireUnityEvent = true)
         {
             int newLevel = baseStats.Level;
             if (newLevel > oldLevel)
             {
                 Debug.Log($"Level of {gameObject} changed to {baseStats.Level}");
                 LevelChanged?.Invoke(newLevel);
-                LevelUp?.Invoke();
-                Instantiate(levelUpEffect, transform);
+                if (fireUnityEvent)
+                    LevelUp?.Invoke();
             }
         }
 
@@ -60,7 +57,7 @@ namespace RPG.Stats
         {
             int oldLevel = baseStats.Level;
             experiencePoints = (float)state;
-            CheckNewLevelAndLevelUp(oldLevel);
+            CheckNewLevelAndLevelUp(oldLevel, false);
             XPChanged?.Invoke(experiencePoints);
             Debug.Log($"Level {gameObject} restored to {baseStats.Level}");
         }

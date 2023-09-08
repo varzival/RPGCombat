@@ -45,6 +45,9 @@ namespace RPG.Stats
         [SerializeField]
         UnityEvent die;
 
+        [SerializeField]
+        UnityEvent heal;
+
         public float GetHealthFraction()
         {
             return health.value / maxHealth.value;
@@ -75,8 +78,6 @@ namespace RPG.Stats
 
         private void Start()
         {
-            health.ForceInit();
-            maxHealth.ForceInit();
             HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
         }
 
@@ -104,6 +105,16 @@ namespace RPG.Stats
             Debug.Log($"health after hit: {health}");
         }
 
+        public void Heal(float healthToRestore)
+        {
+            health.value += healthToRestore;
+            if (health.value > maxHealth.value)
+                health.value = maxHealth.value;
+
+            HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
+            heal?.Invoke();
+        }
+
         public object CaptureState()
         {
             return new Tuple<float, float>(health.value, maxHealth.value);
@@ -119,7 +130,7 @@ namespace RPG.Stats
 
             if (health.value <= 0)
             {
-                Die();
+                Die(false);
             }
             else
             {
@@ -131,11 +142,12 @@ namespace RPG.Stats
             }
         }
 
-        private void Die()
+        private void Die(bool fireUnityEvent = true)
         {
             dead = true;
             GetComponent<Animator>().SetTrigger("Die");
-            die?.Invoke();
+            if (fireUnityEvent)
+                die?.Invoke();
         }
     }
 }

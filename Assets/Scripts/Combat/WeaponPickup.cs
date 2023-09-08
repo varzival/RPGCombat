@@ -1,6 +1,7 @@
 using System.Collections;
 using RPG.CharacterControl;
 using RPG.Characters;
+using RPG.Stats;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -9,6 +10,9 @@ namespace RPG.Combat
     {
         [SerializeField]
         WeaponConfig weapon;
+
+        [SerializeField]
+        float healthToRestore = 0;
 
         [SerializeField]
         CursorType cursorType;
@@ -40,13 +44,22 @@ namespace RPG.Combat
                 return;
             if (other.gameObject.tag == "Player")
             {
-                Pickup(other.gameObject.GetComponent<Fighter>());
+                Pickup(other.gameObject);
             }
         }
 
-        private void Pickup(Fighter fighter)
+        private void Pickup(GameObject player)
         {
-            fighter.EquipWeapon(weapon);
+            if (weapon != null)
+            {
+                Fighter fighter = player.GetComponent<Fighter>();
+                fighter.EquipWeapon(weapon);
+            }
+            if (healthToRestore > 0)
+            {
+                Health health = player.GetComponent<Health>();
+                health.Heal(healthToRestore);
+            }
             StartCoroutine(HideForSeconds(respawnTime));
         }
 
