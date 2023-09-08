@@ -5,6 +5,7 @@ using RPG.Saving;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using GameDevTV.Utils;
 
 namespace RPG.Combat
 {
@@ -20,8 +21,8 @@ namespace RPG.Combat
         {
             get
             {
-                if (currentWeapon != null)
-                    return currentWeapon.WeaponRange;
+                if (currentWeaponConfig != null)
+                    return currentWeaponConfig.WeaponRange;
                 return 0;
             }
         }
@@ -30,8 +31,8 @@ namespace RPG.Combat
         {
             get
             {
-                if (currentWeapon != null)
-                    return currentWeapon.TimeBetweenAttacks;
+                if (currentWeaponConfig != null)
+                    return currentWeaponConfig.TimeBetweenAttacks;
                 return 0;
             }
         }
@@ -40,14 +41,14 @@ namespace RPG.Combat
         {
             get
             {
-                if (currentWeapon != null)
-                    return currentWeapon.Damage;
+                if (currentWeaponConfig != null)
+                    return currentWeaponConfig.Damage;
                 return 0;
             }
         }
 
         [SerializeField]
-        Weapon defaultWeapon;
+        WeaponConfig defaultWeapon;
 
         [SerializeField]
         Transform rightHandTransform;
@@ -57,7 +58,8 @@ namespace RPG.Combat
 
         BaseStats baseStats;
 
-        Weapon currentWeapon;
+        WeaponConfig currentWeaponConfig;
+        LazyValue<Weapon> currentWeapon;
 
         Health target;
         float timeSinceLastAttack = Mathf.Infinity;
@@ -72,12 +74,13 @@ namespace RPG.Combat
         private void Awake()
         {
             baseStats = GetComponent<BaseStats>();
+            currentWeaponConfig = defaultWeapon;
+            currentWeapon = new LazyValue<Weapon>(() => EquipWeapon(currentWeaponConfig));
         }
 
         private void Start()
         {
-            if (currentWeapon == null)
-                EquipWeapon(defaultWeapon);
+            currentWeapon.ForceInit();
         }
 
         private void Update()
@@ -94,12 +97,15 @@ namespace RPG.Combat
             }
         }
 
-        public void EquipWeapon(Weapon weapon)
+        public Weapon EquipWeapon(WeaponConfig weaponConfig)
         {
-            if (weapon == null)
-                return;
-            weapon.Spawn(rightHandTransform, leftHandTransform, GetComponent<Animator>());
-            currentWeapon = weapon;
+            currentWeaponConfig = weaponConfig;
+            currentWeapon.value = weaponConfig.Spawn(
+                rightHandTransform,
+                leftHandTransform,
+                GetComponent<Animator>()
+            );
+            return currentWeapon.value;
         }
 
         private bool TargetInRange()
@@ -145,11 +151,17 @@ namespace RPG.Combat
             Debug.Log($"Hit Animation Event called at: {Time.time} with target {target}");
             if (target is null)
                 return;
+
+            if (currentWeapon.value != null)
+            {
+                currentWeapon.value.OnHit();
+            }
+
             if (TargetInRange())
             {
-                if (currentWeapon.HasProjectile)
+                if (currentWeaponConfig.HasProjectile)
                 {
-                    currentWeapon.LaunchProjectile(
+                    currentWeaponConfig.LaunchProjectile(
                         rightHandTransform,
                         leftHandTransform,
                         target,
@@ -172,14 +184,14 @@ namespace RPG.Combat
 
         public object CaptureState()
         {
-            return currentWeapon.name;
+            return currentWeaponConfig.name;
         }
 
         public void RestoreState(object state)
         {
             string weaponName = (string)state;
             if (weaponName != null && weaponName != "")
-                EquipWeapon(Resources.Load<Weapon>(weaponName));
+                EquipWeapon(Resources.Load<WeaponConfig>(weaponName));
         }
 
         public IEnumerable<float> GetAdditiveProvider(Stats.Stats stat)
