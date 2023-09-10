@@ -108,8 +108,10 @@ namespace RPG.Combat
             return currentWeapon.value;
         }
 
-        private bool TargetInRange()
+        public bool TargetInRange()
         {
+            if (target == null)
+                return false;
             return DistanceToTarget() <= WeaponRange;
         }
 

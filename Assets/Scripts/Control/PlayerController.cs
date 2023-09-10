@@ -39,6 +39,10 @@ namespace RPG.CharacterControl
         [Range(0.0f, 1.0f)]
         float navMeshTolerance = 0.3f;
 
+        [SerializeField]
+        [Range(0.0f, 2.0f)]
+        float sphereCastTolerance = 0.5f;
+
         private void Start()
         {
             health = GetComponent<Health>();
@@ -93,7 +97,10 @@ namespace RPG.CharacterControl
             RaycastHit[] raycastHits = RaycastAllSorted();
             foreach (RaycastHit hit in raycastHits)
             {
-                if (!GetComponent<Mover>().CanMoveTo(hit.transform.position))
+                if (
+                    !GetComponent<Mover>().CanMoveTo(hit.transform.position)
+                    && !GetComponent<Fighter>().TargetInRange()
+                )
                     return false;
 
                 if (hit.transform.gameObject.TryGetComponent(out IRaycastable raycastable))
@@ -167,7 +174,7 @@ namespace RPG.CharacterControl
 
         private RaycastHit[] RaycastAllSorted()
         {
-            RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
+            RaycastHit[] hits = Physics.SphereCastAll(GetMouseRay(), sphereCastTolerance);
             IEnumerable<float> distances = hits.Select((h) => h.distance);
             Array.Sort(distances.ToArray(), hits);
             return hits;

@@ -57,10 +57,11 @@ namespace RPG.CharacterControl
             get { return aggro; }
             set
             {
+                bool triggerAggro = false; // aggro should be triggered after setting aggro value to avoid infinite loops
                 if (!aggro && value)
                 {
                     TriggerAggro?.Invoke();
-                    AggroNearbyEnemies();
+                    triggerAggro = true;
                 }
                 if (value)
                 {
@@ -71,6 +72,10 @@ namespace RPG.CharacterControl
                     timeSinceLastSeenPlayer = 0; // reset timeSinceLastSeenPlayer in order to stay suspicious
                 }
                 aggro = value;
+                if (triggerAggro)
+                {
+                    AggroNearbyEnemies();
+                }
             }
         }
 
@@ -173,6 +178,9 @@ namespace RPG.CharacterControl
             );
             foreach (RaycastHit hit in hits)
             {
+                if (hit.collider.gameObject == gameObject)
+                    continue;
+
                 if (hit.collider.gameObject.TryGetComponent(out AIController enemyController))
                 {
                     print($"enemy found by {hit.collider.gameObject}");

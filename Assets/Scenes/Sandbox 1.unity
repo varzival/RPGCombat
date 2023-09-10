@@ -1190,6 +1190,7 @@ GameObject:
   - component: {fileID: 554094013}
   - component: {fileID: 554094015}
   - component: {fileID: 554094016}
+  - component: {fileID: 554094017}
   m_Layer: 2
   m_Name: IntroSequence
   m_TagString: Untagged
@@ -1293,6 +1294,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59aad2dea6d0731b8a53a3ac5dd191b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &554094017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554094010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccfcf5d2546de692f998c2e48feb8c01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uuid: 5dda4063-1619-4942-9009-3222935813c6
 --- !u!1001 &594553101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2983,7 +2997,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1326385480
 Transform:
   m_ObjectHideFlags: 0
