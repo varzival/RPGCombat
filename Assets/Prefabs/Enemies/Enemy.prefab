@@ -23,6 +23,14 @@ PrefabInstance:
       propertyPath: m_Speed
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3687100063778483492, guid: a2b96f77ec2caee5f9a615e39d841e97, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235590237767802283, guid: a2b96f77ec2caee5f9a615e39d841e97, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6396958039780149309, guid: a2b96f77ec2caee5f9a615e39d841e97, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -141,10 +149,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chaseDistance: 5
   suspicionTime: 5
+  aggroTime: 5
   waypointPrecision: 0.5
   waypointDwellDuration: 3
   patrolSpeed: 2.5
   chaseSpeed: 3.5
+  shoutDistance: 5
   patrolPath: {fileID: 0}
   TriggerAggro:
     m_PersistentCalls:
@@ -173,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0344098d5ed3a42d3bd6ed308317f27d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxNavMeshDistance: 10
 --- !u!114 &6586080159824815402
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Linq;
 using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
@@ -17,11 +18,49 @@ namespace RPG.Characters
         Health health;
         ActionScheduler actionScheduler;
 
+        [SerializeField]
+        float maxNavMeshDistance = 10f;
+
         private void Awake()
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
             health = GetComponent<Health>();
             actionScheduler = GetComponent<ActionScheduler>();
+        }
+
+        private float GetPathLength(NavMeshPath path)
+        {
+            if (path.corners?.Length < 2)
+                return 0;
+            Vector3 lastCorner = Vector3.zero;
+            return path.corners.Aggregate(
+                0f,
+                (current, next) =>
+                {
+                    if (lastCorner == Vector3.zero)
+                    {
+                        lastCorner = next;
+                        return current;
+                    }
+                    else
+                    {
+                        current += Vector3.Distance(lastCorner, next);
+                        lastCorner = next;
+                        return current;
+                    }
+                }
+            );
+        }
+
+        public bool CanMoveTo(Vector3 destination)
+        {
+            NavMeshPath path = new();
+            if (NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path))
+            {
+                return path.status == NavMeshPathStatus.PathComplete
+                    && GetPathLength(path) <= maxNavMeshDistance;
+            }
+            return false;
         }
 
         public void StartMoveAction(Vector3 to)

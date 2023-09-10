@@ -39,8 +39,7 @@ namespace RPG.Stats
         // Health Fraction, Health, maxHealth
         public event Action<float, float, float> HealthChanged;
 
-        [SerializeField]
-        UnityEvent<float> takeDamage;
+        public UnityEvent<float> takeDamage;
 
         [SerializeField]
         UnityEvent die;

@@ -19,6 +19,9 @@ namespace RPG.CharacterControl
         float suspicionTime = 5f;
 
         [SerializeField]
+        float aggroTime = 5f;
+
+        [SerializeField]
         float waypointPrecision = 0.5f;
 
         [SerializeField]
@@ -31,6 +34,9 @@ namespace RPG.CharacterControl
         float chaseSpeed = 3.5f;
 
         [SerializeField]
+        float shoutDistance = 5f;
+
+        [SerializeField]
         PatrolPath patrolPath;
 
         Fighter fighter;
@@ -41,19 +47,56 @@ namespace RPG.CharacterControl
 
         Vector3 guardPosition;
         int currentWaypointIndex = 0;
-        float timeSinceLastSawPlayer = Mathf.Infinity;
+        float timeSinceAggro = Mathf.Infinity;
+        float timeSinceLastSeenPlayer = Mathf.Infinity;
         float timeSinceLastWaypoint = 0;
         bool aggro = false;
+
+        public bool Aggro
+        {
+            get { return aggro; }
+            set
+            {
+                if (!aggro && value)
+                {
+                    TriggerAggro?.Invoke();
+                    AggroNearbyEnemies();
+                }
+                if (value)
+                {
+                    timeSinceAggro = 0;
+                }
+                if (value != aggro)
+                {
+                    timeSinceLastSeenPlayer = 0; // reset timeSinceLastSeenPlayer in order to stay suspicious
+                }
+                aggro = value;
+            }
+        }
 
         [SerializeField]
         UnityEvent TriggerAggro;
 
-        private void Start()
+        private void Awake()
         {
             fighter = GetComponent<Fighter>();
             health = GetComponent<Health>();
             mover = GetComponent<Mover>();
             scheduler = GetComponent<ActionScheduler>();
+        }
+
+        private void OnEnable()
+        {
+            health.takeDamage.AddListener(
+                (float value) =>
+                {
+                    Aggro = true;
+                }
+            );
+        }
+
+        private void Start()
+        {
             player = GameObject.FindWithTag("Player");
             guardPosition = transform.position;
         }
@@ -63,16 +106,20 @@ namespace RPG.CharacterControl
             if (health.IsDead)
                 return;
 
-            timeSinceLastSawPlayer += Time.deltaTime;
+            timeSinceAggro += Time.deltaTime;
+            timeSinceLastSeenPlayer += Time.deltaTime;
 
             if (Vector3.Distance(transform.position, player.transform.position) <= chaseDistance)
             {
-                fighter.Attack(player.GetComponent<Health>());
-                timeSinceLastSawPlayer = 0;
-                mover.SetSpeed(chaseSpeed);
-                SetAggro(true);
+                Aggro = true;
             }
-            else if (timeSinceLastSawPlayer <= suspicionTime)
+
+            if (Aggro)
+            {
+                fighter.Attack(player.GetComponent<Health>());
+                mover.SetSpeed(chaseSpeed);
+            }
+            else if (timeSinceLastSeenPlayer <= suspicionTime)
             {
                 scheduler.CancelCurrentAction();
             }
@@ -103,17 +150,10 @@ namespace RPG.CharacterControl
                 mover.StartMoveAction(moveTo);
             }
 
-            if (timeSinceLastSawPlayer > suspicionTime)
+            if (timeSinceAggro > aggroTime && Aggro)
             {
-                SetAggro(false);
+                Aggro = false;
             }
-        }
-
-        private void SetAggro(bool value)
-        {
-            if (!aggro && value)
-                TriggerAggro?.Invoke();
-            aggro = value;
         }
 
         // Called by Unity
@@ -123,12 +163,30 @@ namespace RPG.CharacterControl
             Gizmos.DrawWireSphere(transform.position, chaseDistance);
         }
 
+        private void AggroNearbyEnemies()
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(
+                transform.position,
+                shoutDistance,
+                Vector3.up,
+                0f
+            );
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.gameObject.TryGetComponent(out AIController enemyController))
+                {
+                    print($"enemy found by {hit.collider.gameObject}");
+                    enemyController.Aggro = true;
+                }
+            }
+        }
+
         public object CaptureState()
         {
             Dictionary<string, float> varsDict = new Dictionary<string, float>();
 
             varsDict["currentWaypointIndex"] = currentWaypointIndex;
-            varsDict["timeSinceLastSawPlayer"] = timeSinceLastSawPlayer;
+            varsDict["timeSinceLastSawPlayer"] = timeSinceAggro;
             varsDict["timeSinceLastWaypoint"] = timeSinceLastWaypoint;
 
             return varsDict;
@@ -139,7 +197,7 @@ namespace RPG.CharacterControl
             Dictionary<string, float> varsDict = (Dictionary<string, float>)state;
 
             currentWaypointIndex = (int)varsDict["currentWaypointIndex"];
-            timeSinceLastSawPlayer = varsDict["timeSinceLastSawPlayer"];
+            timeSinceAggro = varsDict["timeSinceLastSawPlayer"];
             timeSinceLastWaypoint = varsDict["timeSinceLastWaypoint"];
         }
     }

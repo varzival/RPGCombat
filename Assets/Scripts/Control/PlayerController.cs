@@ -7,7 +7,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.AI;
-using System.IO;
 
 namespace RPG.CharacterControl
 {
@@ -39,9 +38,6 @@ namespace RPG.CharacterControl
         [SerializeField]
         [Range(0.0f, 1.0f)]
         float navMeshTolerance = 0.3f;
-
-        [SerializeField]
-        float maxNavMeshDistance = 10f;
 
         private void Start()
         {
@@ -97,6 +93,9 @@ namespace RPG.CharacterControl
             RaycastHit[] raycastHits = RaycastAllSorted();
             foreach (RaycastHit hit in raycastHits)
             {
+                if (!GetComponent<Mover>().CanMoveTo(hit.transform.position))
+                    return false;
+
                 if (hit.transform.gameObject.TryGetComponent(out IRaycastable raycastable))
                 {
                     if (raycastable.HandleRaycast(this, hit.point))
@@ -126,6 +125,9 @@ namespace RPG.CharacterControl
         {
             if (RaycastNavMesh(out Vector3 target))
             {
+                if (!GetComponent<Mover>().CanMoveTo(target))
+                    return false;
+
                 if (Input.GetMouseButton(0))
                 {
                     GetComponent<Mover>().StartMoveAction(target);
@@ -151,41 +153,11 @@ namespace RPG.CharacterControl
                 )
                 {
                     target = hit.position;
-                    NavMeshPath path = new();
-                    if (NavMesh.CalculatePath(transform.position, target, NavMesh.AllAreas, path))
-                    {
-                        return path.status == NavMeshPathStatus.PathComplete
-                            && GetPathLength(path) <= maxNavMeshDistance;
-                    }
-                    return false;
+                    return true;
                 }
             }
             target = Vector3.zero;
             return false;
-        }
-
-        private float GetPathLength(NavMeshPath path)
-        {
-            if (path.corners?.Length < 2)
-                return 0;
-            Vector3 lastCorner = Vector3.zero;
-            return path.corners.Aggregate(
-                0f,
-                (current, next) =>
-                {
-                    if (lastCorner == Vector3.zero)
-                    {
-                        lastCorner = next;
-                        return current;
-                    }
-                    else
-                    {
-                        current += Vector3.Distance(lastCorner, next);
-                        lastCorner = next;
-                        return current;
-                    }
-                }
-            );
         }
 
         private Ray GetMouseRay()
