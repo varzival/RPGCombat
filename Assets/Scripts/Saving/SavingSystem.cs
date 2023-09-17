@@ -10,7 +10,7 @@ namespace RPG.Saving
 {
     public class SavingSystem : MonoBehaviour
     {
-        private ISerializer serializer;
+        private ISerializer<Dictionary<string, object>> serializer;
 
         private void Start()
         {

@@ -8,7 +8,7 @@ namespace RPG.SceneManagement
     {
         [SerializeField]
         float fadeInDuration = 3f;
-        const string defaultSaveFile = "save.sav";
+        const string defaultSaveFile = "save.json";
 
         private void Start()
         {
@@ -17,7 +17,7 @@ namespace RPG.SceneManagement
 
         private IEnumerator LoadOnStart()
         {
-            yield return GetComponent<SavingSystem>().LoadLastScene(defaultSaveFile);
+            yield return GetComponent<JSONSavingSystem>().LoadLastScene(defaultSaveFile);
             yield return FindObjectOfType<Fader>().FadeIn(fadeInDuration);
         }
 
@@ -41,17 +41,17 @@ namespace RPG.SceneManagement
 
         public void Load()
         {
-            GetComponent<SavingSystem>().Load(defaultSaveFile);
+            GetComponent<JSONSavingSystem>().Load(defaultSaveFile);
         }
 
         public void Save()
         {
-            GetComponent<SavingSystem>().Save(defaultSaveFile);
+            GetComponent<JSONSavingSystem>().Save(defaultSaveFile);
         }
 
         public void Delete()
         {
-            GetComponent<SavingSystem>().Delete(defaultSaveFile);
+            GetComponent<JSONSavingSystem>().Delete(defaultSaveFile);
         }
     }
 }

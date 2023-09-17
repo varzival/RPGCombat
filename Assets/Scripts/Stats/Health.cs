@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using GameDevTV.Utils;
 using UnityEngine.Events;
+using Newtonsoft.Json.Linq;
 
 namespace RPG.Stats
 {
@@ -12,7 +13,7 @@ namespace RPG.Stats
         RequireComponent(typeof(ActionScheduler)),
         RequireComponent(typeof(BaseStats))
     ]
-    public class Health : MonoBehaviour, ISaveable
+    public class Health : MonoBehaviour, ISaveable, IJSONSaveable
     {
         LazyValue<float> health;
         LazyValue<float> maxHealth;
@@ -101,7 +102,7 @@ namespace RPG.Stats
             }
             HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
             takeDamage?.Invoke(damage);
-            Debug.Log($"health after hit: {health}");
+            Debug.Log($"health after hit: {health.value}");
         }
 
         public void Heal(float healthToRestore)
@@ -124,7 +125,24 @@ namespace RPG.Stats
             Tuple<float, float> values = (Tuple<float, float>)state;
             health.value = values.Item1;
             maxHealth.value = values.Item2;
-            //print($"Health restored to {health.value}/{maxHealth.value}");
+            TriggerRestoreEvents();
+        }
+
+        public JToken CaptureStateAsJToken()
+        {
+            return JToken.FromObject(new Tuple<float, float>(health.value, maxHealth.value));
+        }
+
+        public void RestoreStateFromJToken(JToken state)
+        {
+            Tuple<float, float> values = state.ToObject<Tuple<float, float>>();
+            health.value = values.Item1;
+            maxHealth.value = values.Item2;
+            TriggerRestoreEvents();
+        }
+
+        private void TriggerRestoreEvents()
+        {
             HealthChanged?.Invoke(GetHealthFraction(), health.value, maxHealth.value);
 
             if (health.value <= 0)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
@@ -10,7 +11,7 @@ using UnityEngine.Events;
 namespace RPG.CharacterControl
 {
     [RequireComponent(typeof(Fighter)), RequireComponent(typeof(Mover))]
-    public class AIController : MonoBehaviour, ISaveable
+    public class AIController : MonoBehaviour, ISaveable, IJSONSaveable
     {
         [SerializeField]
         float chaseDistance = 5f;
@@ -203,6 +204,28 @@ namespace RPG.CharacterControl
         public void RestoreState(object state)
         {
             Dictionary<string, float> varsDict = (Dictionary<string, float>)state;
+
+            currentWaypointIndex = (int)varsDict["currentWaypointIndex"];
+            timeSinceAggro = varsDict["timeSinceLastSawPlayer"];
+            timeSinceLastWaypoint = varsDict["timeSinceLastWaypoint"];
+        }
+
+        public JToken CaptureStateAsJToken()
+        {
+            Dictionary<string, float> varsDict =
+                new()
+                {
+                    ["currentWaypointIndex"] = currentWaypointIndex,
+                    ["timeSinceLastSawPlayer"] = timeSinceAggro,
+                    ["timeSinceLastWaypoint"] = timeSinceLastWaypoint
+                };
+
+            return JToken.FromObject(varsDict);
+        }
+
+        public void RestoreStateFromJToken(JToken state)
+        {
+            Dictionary<string, float> varsDict = state.ToObject<Dictionary<string, float>>();
 
             currentWaypointIndex = (int)varsDict["currentWaypointIndex"];
             timeSinceAggro = varsDict["timeSinceLastSawPlayer"];

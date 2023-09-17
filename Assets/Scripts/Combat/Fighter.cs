@@ -6,6 +6,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using GameDevTV.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace RPG.Combat
 {
@@ -15,7 +16,7 @@ namespace RPG.Combat
         RequireComponent(typeof(ActionScheduler)),
         RequireComponent(typeof(BaseStats))
     ]
-    public class Fighter : MonoBehaviour, IAction, ISaveable, IModifierProvider
+    public class Fighter : MonoBehaviour, IAction, ISaveable, IJSONSaveable, IModifierProvider
     {
         public float WeaponRange
         {
@@ -206,6 +207,18 @@ namespace RPG.Combat
         public IEnumerable<float> GetMultiplicativeProvider(Stats.Stats stat)
         {
             return new float[] { };
+        }
+
+        public JToken CaptureStateAsJToken()
+        {
+            return JToken.FromObject(currentWeaponConfig.name);
+        }
+
+        public void RestoreStateFromJToken(JToken state)
+        {
+            string weaponName = state.ToObject<string>();
+            if (weaponName != null && weaponName != "")
+                EquipWeapon(Resources.Load<WeaponConfig>(weaponName));
         }
     }
 }

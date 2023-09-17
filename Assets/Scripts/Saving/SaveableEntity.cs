@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -86,6 +87,35 @@ namespace RPG.Saving
                 string key = saveable.GetType().ToString();
                 if (dict.ContainsKey(key))
                     saveable.RestoreState(dict[key]);
+            }
+        }
+
+        public JToken CaptureAsJtoken()
+        {
+            JObject state = new JObject();
+            IDictionary<string, JToken> stateDict = state;
+            foreach (IJSONSaveable jsonSaveable in GetComponents<IJSONSaveable>())
+            {
+                JToken token = jsonSaveable.CaptureStateAsJToken();
+                string component = jsonSaveable.GetType().ToString();
+                Debug.Log($"{name} Capture {component} = {token}");
+                stateDict[jsonSaveable.GetType().ToString()] = token;
+            }
+            return state;
+        }
+
+        public void RestoreFromJToken(JToken s)
+        {
+            JObject state = s.ToObject<JObject>();
+            IDictionary<string, JToken> stateDict = state;
+            foreach (IJSONSaveable jsonSaveable in GetComponents<IJSONSaveable>())
+            {
+                string component = jsonSaveable.GetType().ToString();
+                if (stateDict.ContainsKey(component))
+                {
+                    Debug.Log($"{name} Restore {component} => {stateDict[component]}");
+                    jsonSaveable.RestoreStateFromJToken(stateDict[component]);
+                }
             }
         }
     }

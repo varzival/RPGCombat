@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json.Linq;
 using RPG.Saving;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,7 +7,7 @@ using UnityEngine.Events;
 namespace RPG.Stats
 {
     [RequireComponent(typeof(BaseStats))]
-    public class Experience : MonoBehaviour, ISaveable
+    public class Experience : MonoBehaviour, ISaveable, IJSONSaveable
     {
         float experiencePoints = 0f;
 
@@ -57,6 +58,20 @@ namespace RPG.Stats
         {
             int oldLevel = baseStats.Level;
             experiencePoints = (float)state;
+            CheckNewLevelAndLevelUp(oldLevel, false);
+            XPChanged?.Invoke(experiencePoints);
+            Debug.Log($"Level {gameObject} restored to {baseStats.Level}");
+        }
+
+        public JToken CaptureStateAsJToken()
+        {
+            return JToken.FromObject(experiencePoints);
+        }
+
+        public void RestoreStateFromJToken(JToken state)
+        {
+            int oldLevel = baseStats.Level;
+            experiencePoints = state.ToObject<float>();
             CheckNewLevelAndLevelUp(oldLevel, false);
             XPChanged?.Invoke(experiencePoints);
             Debug.Log($"Level {gameObject} restored to {baseStats.Level}");

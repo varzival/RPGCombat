@@ -1,4 +1,5 @@
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using RPG.Core;
 using RPG.Saving;
 using RPG.Stats;
@@ -12,7 +13,7 @@ namespace RPG.Characters
         RequireComponent(typeof(Health)),
         RequireComponent(typeof(NavMeshAgent))
     ]
-    public class Mover : MonoBehaviour, IAction, ISaveable
+    public class Mover : MonoBehaviour, IAction, ISaveable, IJSONSaveable
     {
         NavMeshAgent navMeshAgent;
         Health health;
@@ -112,6 +113,18 @@ namespace RPG.Characters
         {
             SerializableVector3 vector3 = (SerializableVector3)state;
             navMeshAgent.Warp(vector3.toVector3());
+            actionScheduler.CancelCurrentAction();
+        }
+
+        public JToken CaptureStateAsJToken()
+        {
+            return transform.position.ToToken();
+        }
+
+        public void RestoreStateFromJToken(JToken state)
+        {
+            Vector3 vector3 = state.ToVector3();
+            navMeshAgent.Warp(vector3);
             actionScheduler.CancelCurrentAction();
         }
     }
